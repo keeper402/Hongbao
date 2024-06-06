@@ -18,6 +18,7 @@ contract Hongbao {
 
     function deposit(uint256 _numOfEnvelopes) external payable {
         require(msg.sender == owner, "Only the owner can deposit.");
+        require(remainingEnvelopes == 0, "Only one Hongbao can be sent at the same time.");
         require(msg.value > 0, "Deposit amount must be greater than zero.");
         require(_numOfEnvelopes > 0, "Number of envelopes must be greater than zero.");
 
