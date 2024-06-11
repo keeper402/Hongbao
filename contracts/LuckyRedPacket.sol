@@ -15,7 +15,7 @@ contract LuckyRedPacket {
     mapping(bytes32 => RedPacket) public redPackets;
 
     // 创建红包事件
-    event RedPacketCreated(bytes32 indexed keyHash, bytes32[] hashedPackets, uint256 totalAmount);
+    event RedPacketCreated(bytes32 indexed keyHash, bytes32[] hashedPackets, address indexed creator, uint256 totalAmount);
 
     // 领取红包事件
     event RedPacketClaimed(bytes32 indexed keyHash, bytes32 doubleHashedKey, address indexed claimer, uint256 amount);
@@ -33,7 +33,7 @@ contract LuckyRedPacket {
         packet.totalAmount = msg.value;
         packet.remainingAmount = msg.value;
 
-        emit RedPacketCreated(keyHash, hashedPackets, msg.value);
+        emit RedPacketCreated(keyHash, hashedPackets, msg.sender, msg.value);
     }
 
     // 查询当前的 cnt 值
