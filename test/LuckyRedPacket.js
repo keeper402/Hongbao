@@ -5,7 +5,8 @@ const { ethers } = require("hardhat");
 describe("LuckyRedPacket", function () {
     it("Should create and claim a red packet", async function () {
         const provider = ethers.provider;
-        const [owner, user1, user2] = await ethers.getSigners();
+        const [creator, user1, user2,
+            user3, user4, user5] = await ethers.getSigners();
         const LuckyRedPacket = await ethers.getContractFactory("LuckyRedPacket");
         const luckyRedPacket = await LuckyRedPacket.deploy();
 
@@ -23,12 +24,13 @@ describe("LuckyRedPacket", function () {
         }
 
         // 获取用户1和用户2的初始余额
+        const initialBalanceCreator = await provider.getBalance(creator.address);
         const initialBalanceUser1 = await provider.getBalance(user1.address);
-        const initialBalanceUser2 = await provider.getBalance(user2.address);
 
         //创建测试！！
         const totalAmount = ethers.parseEther("1");
-        const createTx = await luckyRedPacket.connect(user1).createRedPacket(keyHash, hashedPackets, { value: totalAmount });
+        const createTx = await luckyRedPacket.connect(creator).createRedPacket(keyHash, hashedPackets, { value: totalAmount });
+        console.log("remaining amount ", await luckyRedPacket.getRemainingAmount(keyHash));
         // 等待交易确认
         await createTx.wait();
         // 获取事件日志
@@ -37,34 +39,51 @@ describe("LuckyRedPacket", function () {
         const creatEventArgs = createEvents[0].args;
         console.log("creatEventArgs ", creatEventArgs)
 
+        //再次创建测试
+        // await luckyRedPacket.connect(user1).createRedPacket(keyHash, hashedPackets, { value: totalAmount });
+
+
 
 
         // 领取红包 测试！！！
         const hashedKey = hashedOnceKeys[0];
-        const claimTx = await luckyRedPacket.connect(user2).claimRedPacket(keyHash, hashedKey);
+        const claimTx = await luckyRedPacket.connect(user1).claimRedPacket(keyHash, hashedKey);
         // 等待交易确认
         await claimTx.wait();
-        // 获取事件日志
-        const claimEventFilter = luckyRedPacket.filters.RedPacketClaimed(null, null);
-        const claimEvents = await luckyRedPacket.queryFilter(claimEventFilter);
-        // 检查事件日志
-        expect(claimEvents.length).to.equal(1);
-        const claimEventArgs = claimEvents[0].args;
-        console.log("claimEventArgs ", claimEventArgs)
 
 
         // 获取用户1和用户2的余额变化
+        const finalBalanceCreator = await provider.getBalance(creator.address);
         const finalBalanceUser1 = await provider.getBalance(user1.address);
-        const finalBalanceUser2 = await provider.getBalance(user2.address);
 
         // 打印用户1和用户2的余额变化
-        console.log("User 1 initial balance:", initialBalanceUser1.toString());
-        console.log("User 1 final balance:", finalBalanceUser1.toString());
-        console.log("User 2 initial balance:", initialBalanceUser2.toString());
-        console.log("User 2 final balance:", finalBalanceUser2.toString());
+        console.log("Creator initial balance:", initialBalanceCreator.toString());
+        console.log("Creator final balance:", finalBalanceCreator.toString());
+        console.log("User 2 initial balance:", initialBalanceUser1.toString());
+        console.log("User 2 final balance:", finalBalanceUser1.toString());
 
+        const users = [user1, user2, user3, user4, user5];
+        for (let i = 2; i <= number; i++) {
+            const hashedKey = hashedOnceKeys[i - 1];
+            await luckyRedPacket.connect(users[i - 1]).claimRedPacket(keyHash, hashedKey);
+        }
+
+        // 获取事件日志
+        const claimEventFilter = luckyRedPacket.filters.RedPacketClaimed(null, null);
+        const claimEvents = await luckyRedPacket.queryFilter(claimEventFilter);
+        for (let i = 0; i < number; i++) {
+            const claimEventArgs = claimEvents[i].args;
+            console.log("claimEventArgs ", i, claimEventArgs)
+        }
+
+        console.log("remaining amount ", await luckyRedPacket.getRemainingAmount(keyHash));
         // 检查领取后的状态
         const cnt = await luckyRedPacket.getCurrentCnt(keyHash);
-        expect(cnt).to.equal(1);
+
+        //再次创建测试
+        await luckyRedPacket.connect(user1).createRedPacket(keyHash, hashedPackets, { value: totalAmount });
+        console.log("remaining amount ", await luckyRedPacket.getRemainingAmount(keyHash));
+        console.log("remaining cnt ", await luckyRedPacket.getCurrentCnt(keyHash));
+        expect(cnt).to.equal(5);
     });
 });
