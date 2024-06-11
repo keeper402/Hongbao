@@ -70,10 +70,15 @@ contract LuckyRedPacket {
         // 随机分配金额
 //       暂时不用 // 最大不超过剩余的50%
 //        uint256 maxAmount = packet.remainingAmount / 2;
-        uint256 randomFactor = uint256(keccak256(abi.encodePacked(block.timestamp, packet.remainingAmount, msg.sender))) % packet.remainingAmount;
-        uint256 amount = randomFactor + 1; // 确保金额不为0
-        packet.remainingAmount -= amount;
         packet.cnt++;
+        uint256 amount;
+        if (packet.hashedPackets.length == packet.cnt) {
+            amount = packet.remainingAmount;
+        } else {
+            uint256 randomFactor = uint256(keccak256(abi.encodePacked(block.timestamp, packet.remainingAmount, msg.sender))) % packet.remainingAmount;
+            amount = randomFactor + 1; // 确保金额不为0
+        }
+        packet.remainingAmount -= amount;
 
         // 转账
         payable(msg.sender).transfer(amount);
