@@ -58,7 +58,8 @@ contract LuckyRedPacket {
         RedPacket storage packet = redPackets[keyHash];
 
         require(packet.hashedPackets.length > 0, "Red packet not found");
-
+        // 防止提前被领完,比如分了100份，结果包里总共就1 wei。
+        require(packet.remainingAmount > 0, "all money is claimed");
         // 防重入
         require(!packet.claimed[hashedKey], "Network busy or red packet already claimed");
 
