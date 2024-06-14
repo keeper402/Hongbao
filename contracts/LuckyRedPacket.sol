@@ -91,6 +91,10 @@ contract LuckyRedPacket {
         } else {
             uint256 randomFactor = uint256(keccak256(abi.encodePacked(block.timestamp, packet.remainingAmount, msg.sender))) % packet.remainingAmount;
             amount = randomFactor + 1; // 确保金额不为0
+            // 防止 amount > packet.remainingAmount，出现异常。例：remainingAmount 为 1，amount 为 2。
+            if (amount > packet.remainingAmount) {
+                amount = packet.remainingAmount;
+            }
         }
         packet.remainingAmount -= amount;
 
