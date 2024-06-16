@@ -11,6 +11,7 @@ template Passcode() {
     component hash = Poseidon(2);
 
     hash.inputs[0] <== (addr + secret);
+    /* 第二个参数是盐，此处随机取一个数 */
     hash.inputs[1] <== 258741369;
     out <== hash.out; 
 }
