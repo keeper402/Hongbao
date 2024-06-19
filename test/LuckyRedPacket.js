@@ -1,6 +1,7 @@
 // tests/luckyRedPacket.test.js
 const {expect} = require("chai");
 const {ethers} = require("hardhat");
+const {groth16} = require("snarkjs");
 
 
 describe("Hongbao", function () {
@@ -14,7 +15,7 @@ describe("Hongbao", function () {
         const rawKey = "test";
         const number = 5;
         const keccakKey = ethers.keccak256(ethers.toUtf8Bytes(rawKey));
-        let {proof, outHash} = await prove(ethers.getBigInt(0), keccakKey);
+        let {proof, outHash} = await prove(0, keccakKey);
 
         const initialBalanceCreator = await provider.getBalance(creator.address);
         const initialBalanceUser1 = await provider.getBalance(user1.address);
@@ -83,13 +84,14 @@ describe("Hongbao", function () {
 });
 
 
-function prove(addrBigNumber, secretBugNumber) {
-    return snarkjs.groth16.fullProve(
+async function prove(addrBigNumber, secretBugNumber) {
+    const { proof, outHash } = await groth16.fullProve(
         {
             addr: addrBigNumber.toString(),
             secret: secretBugNumber.toString(),
         },
-        "../frontend/hongbao-blockchain/circuits/passhash.wasm",
-        "../frontend/hongbao-blockchain/circuits/passhash_0001.zkey",
-    )
+        "./frontend/hongbao-blockchain/circuits/passhash.wasm",
+        "./frontend/hongbao-blockchain/circuits/passhash_0001.zkey",
+    );
+    return { proof, outHash };
 }
