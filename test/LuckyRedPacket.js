@@ -129,8 +129,8 @@ async function prove(addrBigNumber, secretBugNumber) {
             addr: addrBigNumber.toString(),
             secret: secretBugNumber.toString(),
         },
-        "frontend/hongbao-blockchain/circuits/passhash.wasm",
-        "frontend/hongbao-blockchain/circuits/passhash_0001.zkey",
+        "frontend/hongbao-blockchain/public/circuits/passhash.wasm",
+        "frontend/hongbao-blockchain/public/circuits/passhash_0001.zkey",
     );
     const outHash = ethers.getBigInt(publicSignals[0]);
     return [proof, outHash];
