@@ -16,6 +16,12 @@ module.exports = defineConfig({
       alias: {
         "@": resolve("src"),
       },
+      fallback: {
+        // "crypto": false,
+        // "os": false,
+        // "constants": false,
+        // "path": false
+      }
     },
   },
 });

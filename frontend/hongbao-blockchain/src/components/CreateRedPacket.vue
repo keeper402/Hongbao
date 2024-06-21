@@ -2,6 +2,7 @@
 import { chains } from "@/assets/js/chains";
 import { ethers } from "ethers";
 import { getWeb3Provider } from "@/utils/WalletUtil";
+// import snarkjs from "snarkjs";
 
 export default {
   data() {
@@ -100,8 +101,8 @@ export default {
           addr: addrBN.toString(),
           secret: secretBN.toString(),
         },
-        "passcode_js/passcode.wasm",
-        "passcode_js/passcode_0001.zkey",
+        "circuits/passcode.wasm",
+        "circuits/passcode_0001.zkey",
       );
     },
 
@@ -127,14 +128,15 @@ export default {
       }
     },
     showAlert(title, message) {
-      /*let m = $("#alertModal");
-      m.find(".x-title").text(title);
-      m.find(".x-message").text(message);
-      let myModal = new bootstrap.Modal(m.get(0), {
-        backdrop: "static",
-        keyboard: false,
-      });
-      myModal.show();*/
+      // let m = $("#alertModal");
+      // m.find(".x-title").text(title);
+      // m.find(".x-message").text(message);
+      // let myModal = new bootstrap.Modal(m.get(0), {
+      //   backdrop: "static",
+      //   keyboard: false,
+      // });
+      // myModal.show();
+      alert(title + " _ " + message);
     },
 
     showInfo(title, message) {
@@ -150,6 +152,7 @@ export default {
         keyboard: false,
       });
       myModal.show();*/
+      alert(title + " _ " + message);
     },
 
     showLoading(title, message) {
@@ -175,6 +178,7 @@ export default {
       obj.setMessage(message);
       myModal.show();
       return obj;*/
+      alert(title + " _ " + message);
     },
 
     translateError(err) {
@@ -190,9 +194,9 @@ export default {
       }*/
       return err.message || err.toString();
     },
-    setPopularToken(t) {
-      this.tokenAddress = t.address;
-    },
+    // setPopularToken(t) {
+    //   this.tokenAddress = t.address;
+    // },
     async createRedPacket() {
       // check:
       let chainId = this.chainId,
@@ -783,7 +787,7 @@ export default {
                   <h5 class="card-title">Create a Red Packet</h5>
                   <hr />
                   <form onsubmit="return false">
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                       <label class="form-label">Bonus:</label>
                       <div class="form-check">
                         <label class="form-check-label">
@@ -854,7 +858,7 @@ export default {
                         </ul>
                       </div>
                       <div class="form-text">The token you want to sent.</div>
-                    </div>
+                    </div> -->
                     <div class="mb-3">
                       <label class="form-label" for="bonus-amount"
                         >Bonus Amount:</label
@@ -931,7 +935,7 @@ export default {
                         The case-sensitive password to open the red packet.
                       </div>
                     </div>
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                       <label class="form-label" for="condition-address"
                         >Validator Address:</label
                       >
@@ -955,7 +959,7 @@ export default {
                           What is validator?</a
                         >
                       </div>
-                    </div>
+                    </div> -->
                     <div class="mb-2 text-center">
                       <button
                         class="btn btn-primary ps-5 pe-5"
