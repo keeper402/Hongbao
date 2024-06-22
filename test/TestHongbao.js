@@ -102,26 +102,8 @@ describe("Hongbao", function () {
 
 });
 
-class Proof {
-    constructor(a, b, c) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
-    }
-}
+// todo 水龙头测试
 
-// async function prove(addrBigNumber, secretBugNumber) {
-//     const { proof, publicSignals  } = await groth16.fullProve(
-//         {
-//             addr: addrBigNumber.toString(),
-//             secret: secretBugNumber.toString(),
-//         },
-//         "./frontend/hongbao-blockchain/circuits/passhash.wasm",
-//         "./frontend/hongbao-blockchain/circuits/passhash_0001.zkey",
-//     );
-//     const outHash = ethers.getBigInt(publicSignals[0]);
-//     return [proof,  outHash];
-// }
 
 async function prove(addrBigNumber, secretBugNumber) {
     const {proof, publicSignals} = await groth16.fullProve(
