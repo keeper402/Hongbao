@@ -11,16 +11,11 @@ module.exports = defineConfig({
     transpileDependencies: true,
     lintOnSave: false,
     configureWebpack: {
+        devtool: 'source-map',
         name: name,
         resolve: {
             alias: {
                 "@": resolve("src"),
-            },
-            fallback: {
-                // "crypto": false,
-                // "os": false,
-                // "constants": false,
-                // "path": false
             }
         },
     },
