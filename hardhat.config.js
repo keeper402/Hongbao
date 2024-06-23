@@ -11,7 +11,7 @@ module.exports = {
     solidity: {
         compilers: [    //可指定多个sol版本
             {version: '0.4.26'},
-            {version: '0.8.17'}
+            {version: '0.8.26'}
         ]
     },
     defaultNetwork: 'hardhat',
