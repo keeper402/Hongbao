@@ -6,7 +6,12 @@ const PRIVATE_KEY = `0x${process.env.PRIVATE_KEY}`;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-    solidity: '0.8.17',
+    solidity: {
+        compilers: [    //可指定多个sol版本
+            {version: '0.4.26'},
+            {version: '0.8.17'}
+        ]
+    },
     defaultNetwork: 'hardhat',
     networks: {
         mantle_test: {
