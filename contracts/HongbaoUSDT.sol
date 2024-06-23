@@ -80,9 +80,9 @@ contract Ownable {
 contract ERC20Basic {
     uint256 public _totalSupply;
 
-    function totalSupply() public constant returns (uint256);
+    function totalSupply() public view returns (uint256);
 
-    function balanceOf(address who) public constant returns (uint256);
+    function balanceOf(address who) public view returns (uint256);
 
     function transfer(address to, uint256 value) public;
 

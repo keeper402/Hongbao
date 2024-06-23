@@ -4,6 +4,8 @@ require("dotenv").config({path: '/developer/node/.env'})
 const MANTLE_TESTNET_URL = process.env.MANTLE_TESTNET_URL;
 const PRIVATE_KEY = `0x${process.env.PRIVATE_KEY}`;
 
+console.log("MANTLE_TESTNET_URL: %s", MANTLE_TESTNET_URL);
+
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
     solidity: {

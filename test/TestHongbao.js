@@ -1,5 +1,5 @@
 // tests/luckyRedPacket.test.js
-const {expect} = require("chai");
+const {expect, assert} = require("chai");
 const {ethers} = require("hardhat");
 const {groth16} = require("snarkjs");
 
@@ -40,8 +40,8 @@ describe("Hongbao", function () {
         console.log("creatEventArgs ", creatEventArgs)
 
 
-
-        // 领取红包 测试！！！
+        //
+        // // 领取红包 测试！！！
         const accountB1 = ethers.getBigInt(user1.address);
         const secretB1 = keccakKeyBigInt - accountB1;
         const [prooF1, outHash1] = await prove(accountB1, secretB1);
@@ -56,6 +56,26 @@ describe("Hongbao", function () {
         } catch (error) {
             console.error('Error:', error);
         }
+        console.log("claimfin")
+
+
+
+        // 错误关键词领取红包 测试！！！
+        const accountB2 = ethers.getBigInt(user2.address);
+        const secretB2 = ethers.getBigInt(ethers.keccak256(ethers.toUtf8Bytes('wrong key'))) - accountB2;
+        const [prooF2, outHash1f] = await prove(accountB2, secretB2);
+        const proofs2 = [prooF2.pi_a[0], prooF2.pi_a[1], prooF2.pi_b[0][1], prooF2.pi_b[0][0], prooF2.pi_b[1][1], prooF2.pi_b[1][0], prooF2.pi_c[0], prooF2.pi_c[1]];
+        console.log("claimtx, keccak(pass): %s, address: %s, secret: %s", keccakKeyBigInt, accountB2, secretB2)
+        let wrongPassCantPass = null;
+        try {
+            const claimTx = await hongbao.connect(user2).claimHongbao(outHash1, proofs2);
+            // 等待交易确认
+            await claimTx.wait();
+        } catch (error) {
+            wrongPassCantPass = error;
+            console.error('Error:', error);
+        }
+        expect(wrongPassCantPass).not.eql(null, "wrongPassword Passed!");
         console.log("claimfin")
 
         // //再次创建测试,这个 预期会报错
@@ -111,8 +131,8 @@ async function prove(addrBigNumber, secretBugNumber) {
             addr: addrBigNumber.toString(),
             secret: secretBugNumber.toString(),
         },
-        "frontend/hongbao-blockchain/public/circuits/passhash.wasm",
-        "frontend/hongbao-blockchain/public/circuits/passhash_0001.zkey",
+        "public/circuits/passhash.wasm",
+        "public/circuits/passhash_0001.zkey",
     );
     const outHash = ethers.getBigInt(publicSignals[0]);
     return [proof, outHash];
