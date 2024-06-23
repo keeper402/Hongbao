@@ -13,7 +13,7 @@ describe("Hongbao", function () {
             user3, user4, user5] = await ethers.getSigners();
         const Groth16Verifier = await ethers.getContractFactory("Groth16Verifier");
         const verifier = await Groth16Verifier.deploy();
-        const Hongbao = await ethers.getContractFactory("Hongbao");
+        const Hongbao = await ethers.getContractFactory("HongbaoDev");
         const address = await verifier.getAddress();
         const hongbao = await Hongbao.deploy(address);
         //准备密码相关内容

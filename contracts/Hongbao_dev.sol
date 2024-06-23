@@ -2,9 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "hardhat/console.sol";
 import "./verifier.sol";
 
-contract Hongbao {
+contract HongbaoDev {
     using SafeERC20 for IERC20;
 
     enum ReceiveType {
@@ -82,6 +83,7 @@ contract Hongbao {
         h.remainingAmount = msg.value;
         h.receiveType = receiveType;
         h.timestamp = block.timestamp;
+        console.log("packet created, totalAmount %s, packet number %s", h.totalAmount, total);
 
         idMap[h.id]= h;
         emit HongbaoCreated(passwordHash, total, amount, msg.sender, receiveType, address(0));
@@ -118,6 +120,7 @@ contract Hongbao {
         h.remainingAmount = msg.value;
         h.receiveType = receiveType;
         h.timestamp = block.timestamp;
+        console.log("packet created, totalAmount %s, packet number %s", h.totalAmount, total);
 
         emit HongbaoCreated(passwordHash, total, amount, msg.sender, receiveType, token);
     }
@@ -127,8 +130,18 @@ contract Hongbao {
         return hongbaoMap[keyHash].remainingAmount;
     }
 
+    function printUint256Array(uint256[] memory data) public pure {
+        console.log("printArr");
+        for (uint i = 0; i < data.length; i++) {
+            console.log(data[i]);
+        }
+        console.log("printArrFin");
+    }
+
     //领取红包
     function claimHongbao(uint256 passwordHash, uint256[] memory proof) public returns (bool){
+        console.log("claimHongbao start, passwordHash :%s", passwordHash);
+        //        printUint256Array(proof);
         HongbaoInfo storage hongbao = hongbaoMap[passwordHash];
         require(hongbao.remaining > 0, "hongbao fully claimed");
         bytes memory claimKey = abi.encodePacked(passwordHash, hongbao.timestamp, msg.sender);
@@ -139,7 +152,13 @@ contract Hongbao {
         uint256[2][2] memory b = [[proof[2], proof[3]], [proof[4], proof[5]]];
         uint256[2] memory c = [proof[6], proof[7]];
         uint256[2] memory input = [passwordHash, uint256(uint160(msg.sender))];
+        //        console.log("claimHongbao proof passHash:%s , address : %s", input[0], input[1]);
+        //        console.log("a: %s", s.tostring());
+        //        console.log("b:%s",b);
+        //        console.log("c:%s",c);
         bool verify = defaultVerifier.verifyProof(a, b, c, input);
+        //        console.log("verify return");
+        console.log("verify %s", verify);
         require(verify, "zero knowledge verify fail");
 
         //计算amount
