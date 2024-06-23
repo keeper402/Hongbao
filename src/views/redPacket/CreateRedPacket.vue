@@ -1,15 +1,16 @@
 <script>
-import {chains} from "@/assets/js/chains";
-import {ethers} from "ethers";
-import {getWeb3Provider} from "@/utils/WalletUtil";
-import {groth16} from "snarkjs";
+import { chains } from "@/assets/js/chains";
+import { ethers } from "ethers";
+import { getWeb3Provider } from "@/utils/WalletUtil";
+import { groth16 } from "snarkjs";
+import Consts from "@/utils/Consts";
 
 export default {
   data() {
     return {
       account: null,
-      chainId: 0,
-      tokenType: "ETH",
+      chainId: 31337, // @TODO: local Mantle Testnet test
+      tokenType: "GO",
       tokenAddress: "",
       tokenAmount: "1.0",
       total: 7,
@@ -21,53 +22,58 @@ export default {
       ZERO_ADDRESS: chains.ZERO_ADDRESS,
       mainnets: [],
       testnets: [],
-      RED_PACKET_ADDR: "0xFe6667986f58F2F7ed1e7C17Cee3951d8ABb717f",
-      RED_PACKET_ABI:
-          '[{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"redPacketId","type":"uint256"},{"indexed":true,"internalType":"address","name":"creator","type":"address"},{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint32","name":"total","type":"uint32"},{"indexed":false,"internalType":"enum RedPacket.BonusType","name":"bonusType","type":"uint8"}],"name":"Create","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"redPacketId","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":false,"internalType":"uint256","name":"bonus","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"bonusLeft","type":"uint256"},{"indexed":false,"internalType":"uint32","name":"totalLeft","type":"uint32"}],"name":"Withdraw","type":"event"},{"inputs":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint32","name":"total","type":"uint32"},{"internalType":"enum RedPacket.BonusType","name":"bonusType","type":"uint8"},{"internalType":"uint256","name":"passcodeHash","type":"uint256"},{"internalType":"address","name":"condition","type":"address"}],"name":"create","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"getRedPacket","outputs":[{"views":[{"internalType":"uint256","name":"passcodeHash","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"amountLeft","type":"uint256"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"address","name":"token","type":"address"},{"internalType":"address","name":"condition","type":"address"},{"internalType":"uint32","name":"total","type":"uint32"},{"internalType":"uint32","name":"totalLeft","type":"uint32"},{"internalType":"enum RedPacket.BonusType","name":"bonusType","type":"uint8"}],"internalType":"struct RedPacket.RedPacketInfo","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"addr","type":"address"}],"name":"isOpened","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"uint256[]","name":"proof","type":"uint256[]"}],"name":"open","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256[2]","name":"a","type":"uint256[2]"},{"internalType":"uint256[2][2]","name":"b","type":"uint256[2][2]"},{"internalType":"uint256[2]","name":"c","type":"uint256[2]"},{"internalType":"uint256[2]","name":"input","type":"uint256[2]"}],"name":"verifyProof","outputs":[{"internalType":"bool","name":"r","type":"bool"}],"stateMutability":"view","type":"function"}]',
+      // RED_PACKET_ADDR: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      // RED_PACKET_ABI:
+      //   '[{"inputs":[{"internalType":"address","name":"verifierAddr","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"passwordHash","type":"uint256"},{"indexed":true,"internalType":"address","name":"claimer","type":"address"},{"indexed":false,"internalType":"uint256","name":"claimAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"remaining","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"remainingAmount","type":"uint256"}],"name":"HongbaoClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"passwordHash","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"total","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"address","name":"creator","type":"address"},{"indexed":false,"internalType":"enum Hongbao.ReceiveType","name":"receiveType","type":"uint8"}],"name":"HongbaoCreated","type":"event"},{"inputs":[{"internalType":"uint256","name":"passwordHash","type":"uint256"},{"internalType":"uint256[]","name":"proof","type":"uint256[]"}],"name":"claimHongbao","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"passwordHash","type":"uint256"},{"internalType":"uint256","name":"total","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"enum Hongbao.ReceiveType","name":"receiveType","type":"uint8"}],"name":"createHongbao","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"defaultVerifier","outputs":[{"internalType":"contract Verifier","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"keyHash","type":"uint256"}],"name":"getRemainingAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"data","type":"uint256[]"}],"name":"printUint256Array","outputs":[],"stateMutability":"pure","type":"function"}]',
       CONDITION_ABI:
-          '[{"inputs":[{"internalType":"address","name":"redpacketContract","type":"address"},{"internalType":"uint256","name":"redpacketId","type":"uint256"},{"internalType":"address","name":"operator","type":"address"}],"name":"check","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}]',
+        '[{"inputs":[{"internalType":"address","name":"redpacketContract","type":"address"},{"internalType":"uint256","name":"redpacketId","type":"uint256"},{"internalType":"address","name":"operator","type":"address"}],"name":"check","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}]',
       ERC20_ABI:
-          '[{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]',
+        '[{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]',
       CREATE_TOPIC:
-          "0xf526b6d6ff0fac13f7e16aeea0f08bc8f0789c188dc429de0ea4b56bc06e82c6",
+        "0xf526b6d6ff0fac13f7e16aeea0f08bc8f0789c188dc429de0ea4b56bc06e82c6",
     };
   },
   computed: {
-    nativeToken() {
-      let c = this.BLOCKCHAINS[this.chainId];
-      if (c) {
-        return c.native;
-      }
-      return "ETH";
-    },
-    popularTokens() {
-      let c = this.BLOCKCHAINS[this.chainId];
-      if (c) {
-        let ts = [];
-        for (let t of c.tokens) {
-          if (ts.length < 10 && t.address !== this.ETH_ADDRESS) {
-            ts.push(t);
-          }
-        }
-        return ts;
-      }
-      return [];
-    },
+    // nativeToken() {
+    //   let c = this.BLOCKCHAINS[this.chainId];
+    //   if (c) {
+    //     return c.native;
+    //   }
+    //   return "ETH";
+    // },
+    // popularTokens() {
+    //   let c = this.BLOCKCHAINS[this.chainId];
+    //   if (c) {
+    //     let ts = [];
+    //     for (let t of c.tokens) {
+    //       if (ts.length < 10 && t.address !== this.ETH_ADDRESS) {
+    //         ts.push(t);
+    //       }
+    //     }
+    //     return ts;
+    //   }
+    //   return [];
+    // },
     ready() {
       return this.account && this.chainId > 0;
     },
     networkName() {
+      // if (this.account) {
+      //   let c = this.BLOCKCHAINS[this.chainId];
+      //   if (c) {
+      //     return c.name;
+      //   }
+      //   return "Unsupported Chain (0x" + this.chainId.toString(16) + ")";
+      // }
+      // return "Not connected";
       if (this.account) {
-        let c = this.BLOCKCHAINS[this.chainId];
-        if (c) {
-          return c.name;
-        }
-        return "Unsupported Chain (0x" + this.chainId.toString(16) + ")";
+        return "Chain (0x" + this.chainId.toString(16) + ")";
       }
       return "Not connected";
     },
     wrongNetwork() {
-      return this.account && !this.BLOCKCHAINS[this.chainId];
+      // return this.account && !this.BLOCKCHAINS[this.chainId];
+      return !this.account;
     },
   },
   created() {
@@ -75,11 +81,14 @@ export default {
   },
   methods: {
     toList() {
-      this.$router.push("/list")
+      this.$router.push("/list");
+    },
+    toReceive() {
+      this.$router.push("/receive");
     },
     init() {
       let mainnets = [],
-          testnets = [];
+        testnets = [];
       for (let chainId in this.BLOCKCHAINS) {
         let chain = this.BLOCKCHAINS[chainId];
         if (chain.testnet) {
@@ -100,12 +109,12 @@ export default {
 
     async prove(addrBN, secretBN) {
       return groth16.fullProve(
-          {
-            addr: addrBN.toString(),
-            secret: secretBN.toString(),
-          },
-          "circuits/passhash.wasm",
-          "circuits/passhash_0001.zkey"
+        {
+          addr: addrBN.toString(),
+          secret: secretBN.toString(),
+        },
+        "circuits/passhash.wasm",
+        "circuits/passhash_0001.zkey"
       );
     },
 
@@ -182,6 +191,20 @@ export default {
       myModal.show();
       return obj;*/
       alert(title + " _ " + message);
+      let obj = {
+        setTitle: (t) => {
+          // m.find(".x-title").text(t);
+        },
+        setMessage: (t) => {
+          // m.find(".x-message").text(t);
+        },
+        close: () => {
+          setTimeout(() => {
+            // myModal.hide();
+          }, 500);
+        },
+      };
+      return obj;
     },
 
     translateError(err) {
@@ -203,65 +226,65 @@ export default {
     async createRedPacket() {
       // check:
       let chainId = this.chainId,
-          tokenAddress,
-          tokenAmount,
-          decimals,
-          total,
-          bonusType,
-          password,
-          account,
-          passcode,
-          passcodeHash,
-          conditionAddress = this.ZERO_ADDRESS,
-          value,
-          redPacketId = 0;
+        tokenAddress,
+        tokenAmount,
+        decimals,
+        total,
+        bonusType,
+        password,
+        account,
+        passcode,
+        passcodeHash,
+        conditionAddress = this.ZERO_ADDRESS,
+        value,
+        redPacketId = 0;
       if (!this.ready) {
         return this.showAlert("Error", "Please connect to wallet first!");
       }
       if (this.wrongNetwork) {
         return this.showAlert(
-            "Error",
-            "The connected network is not supported!",
+          "Error",
+          "The connected network is not supported!"
         );
       }
       // important: account must be lowercase:
-      account = this.account.toLowerCase();
-      if (this.tokenType === "ETH") {
-        tokenAddress = this.ETH_ADDRESS;
-        decimals = 18;
-      } else {
-        if (!this.isValidAddress(this.tokenAddress)) {
-          return this.showAlert("Error", "Token address is invalid!");
-        }
-        tokenAddress = this.tokenAddress;
-        let loading1 = this.showLoading(
-                "Get ERC Token",
-                "Get ERC token information...",
-            ),
-            erc1 = new ethers.Contract(
-                tokenAddress,
-                this.ERC20_ABI,
-                getWeb3Provider().getSigner(),
-            );
-        try {
-          decimals = await erc1.decimals();
-          loading1.close();
-          console.log(
-              "got erc " +
-              tokenAddress +
-              " decimals = " +
-              decimals +
-              " type = " +
-              typeof decimals,
-          );
-        } catch (err) {
-          loading1.close();
-          return this.showAlert(
-              "Error",
-              "Failed to get decimals of token: " + this.translateError(err),
-          );
-        }
-      }
+      // account = this.account.toLowerCase();
+      // if (this.tokenType === "ETH") {
+      //   tokenAddress = this.ETH_ADDRESS;
+      //   decimals = 18;
+      // } else {
+      //   if (!this.isValidAddress(this.tokenAddress)) {
+      //     return this.showAlert("Error", "Token address is invalid!");
+      //   }
+      //   tokenAddress = this.tokenAddress;
+      //   let loading1 = this.showLoading(
+      //           "Get ERC Token",
+      //           "Get ERC token information...",
+      //       ),
+      //       erc1 = new ethers.Contract(
+      //           tokenAddress,
+      //           this.ERC20_ABI,
+      //           getWeb3Provider().getSigner(),
+      //       );
+      //   try {
+      //     decimals = await erc1.decimals();
+      //     loading1.close();
+      //     console.log(
+      //         "got erc " +
+      //         tokenAddress +
+      //         " decimals = " +
+      //         decimals +
+      //         " type = " +
+      //         typeof decimals,
+      //     );
+      //   } catch (err) {
+      //     loading1.close();
+      //     return this.showAlert(
+      //         "Error",
+      //         "Failed to get decimals of token: " + this.translateError(err),
+      //     );
+      //   }
+      // }
       // check tokenAmount:
       if (!this.isValidBN(this.tokenAmount, decimals)) {
         return this.showAlert("Error", "Bonus amount is invalid!");
@@ -278,94 +301,96 @@ export default {
         return this.showAlert("Error", "Password must be set!");
       }
       // check condition:
-      if (this.conditionAddress.trim() !== "") {
-        if (!this.isValidAddress(this.conditionAddress)) {
-          return this.showAlert("Error", "Validator address is invalid!");
-        }
-        conditionAddress = this.conditionAddress;
-        let loading2 = this.showLoading(
-                "Check Validator",
-                "Check validator contract...",
-            ),
-            cc = new ethers.Contract(
-                conditionAddress,
-                this.CONDITION_ABI,
-                getWeb3Provider().getSigner(),
-            );
-        try {
-          await cc.check(this.RED_PACKET_ADDR, 1, account);
-          loading2.close();
-        } catch (err) {
-          loading2.close();
-          return this.showAlert(
-              "Error",
-              "Failed to check validator contract: " + this.translateError(err),
-          );
-        }
-      }
+      // if (this.conditionAddress.trim() !== "") {
+      //   if (!this.isValidAddress(this.conditionAddress)) {
+      //     return this.showAlert("Error", "Validator address is invalid!");
+      //   }
+      //   conditionAddress = this.conditionAddress;
+      //   let loading2 = this.showLoading(
+      //           "Check Validator",
+      //           "Check validator contract...",
+      //       ),
+      //       cc = new ethers.Contract(
+      //           conditionAddress,
+      //           this.CONDITION_ABI,
+      //           getWeb3Provider().getSigner(),
+      //       );
+      //   try {
+      //     await cc.check(this.RED_PACKET_ADDR, 1, account);
+      //     loading2.close();
+      //   } catch (err) {
+      //     loading2.close();
+      //     return this.showAlert(
+      //         "Error",
+      //         "Failed to check validator contract: " + this.translateError(err),
+      //     );
+      //   }
+      // }
 
       // now generate password hash:
-      passcode = BigInt(this.keccak(account + password));
-      let {proof, publicSignals} = await this.prove(
-          BigInt("0"),
-          passcode,
-      );
+      // passcode = BigInt(this.keccak(account + password));
+      passcode = BigInt(this.keccak(password));
+      let { proof, publicSignals } = await this.prove(BigInt("0"), passcode);
       console.log(publicSignals);
       passcodeHash = BigInt(publicSignals[0]);
       console.log(
-          "keccak(" + (account + password) + ") = " + passcode.toString(),
+        "keccak(" + (account + password) + ") = " + passcode.toString()
       );
       console.log("passcode hash = ", passcodeHash.toString());
 
-      let loading = this.showLoading("Create", "Check balance..."),
-          redPacket = new ethers.Contract(
-              this.RED_PACKET_ADDR,
-              this.RED_PACKET_ABI,
-              getWeb3Provider().getSigner(),
-          );
+      let loading = this.showLoading("Create", "Check balance...");
+      // @SEE：https://github.com/ethers-io/ethers.js/discussions/3752#discussioncomment-4996797
+      const signer = await getWeb3Provider().getSigner();
+      const redPacket = new ethers.Contract(
+        Consts.redPacketAddress,
+        Consts.redPacketABI,
+        signer
+      );
       try {
-        if (tokenAddress === this.ETH_ADDRESS) {
-          let eth_balance = await getWeb3Provider().getBalance(account);
-          if (eth_balance.lt(tokenAmount)) {
-            throw "You don't have enough " + this.nativeToken + ".";
-          }
-        } else {
-          let erc = new ethers.Contract(
-                  tokenAddress,
-                  this.ERC20_ABI,
-                  getWeb3Provider().getSigner(),
-              ),
-              erc_symbol = await erc.symbol(),
-              erc_balance = await erc.balanceOf(account);
-          if (erc_balance.lt(tokenAmount)) {
-            throw "You don't have enough " + erc_symbol + ".";
-          }
-          console.log("check allowance...");
-          loading.setMessage("Check allowance...");
-          let erc_allowance = await erc.allowance(
-              account,
-              this.RED_PACKET_ADDR,
-          );
-          console.log("allowance = " + erc_allowance);
-          if (erc_allowance.lt(tokenAmount)) {
-            console.log("must increase allowance.");
-            loading.setMessage(
-                "Please approve the Red Packet contract to spend your " +
-                erc_symbol +
-                " in MetaMask...",
-            );
-            let tx_approve = await erc.approve(
-                this.RED_PACKET_ADDR,
-                ethers.parseUnits("1000000000000000000", 18),
-            );
-            loading.setMessage("Please wait for blockchain confirmation...");
-            await tx_approve.wait(1);
-          }
-        }
+        // 检查用户是否有足够的代币余额，并确保用户已经授权某个合约（例如一个红包合约）可以代表用户花费这些代币。
+        // if (tokenAddress === this.ETH_ADDRESS) {
+        //   let eth_balance = await getWeb3Provider().getBalance(account);
+        //   if (eth_balance.lt(tokenAmount)) {
+        //     throw "You don't have enough " + this.nativeToken + ".";
+        //   }
+        // } else {
+        //   let erc = new ethers.Contract(
+        //           tokenAddress,
+        //           this.ERC20_ABI,
+        //           getWeb3Provider().getSigner(),
+        //       ),
+        //       erc_symbol = await erc.symbol(),
+        //       erc_balance = await erc.balanceOf(account);
+        //   if (erc_balance.lt(tokenAmount)) {
+        //     throw "You don't have enough " + erc_symbol + ".";
+        //   }
+        //   console.log("check allowance...");
+        //   loading.setMessage("Check allowance...");
+        //   let erc_allowance = await erc.allowance(
+        //       account,
+        //       this.RED_PACKET_ADDR,
+        //   );
+        //   console.log("allowance = " + erc_allowance);
+        //   if (erc_allowance.lt(tokenAmount)) {
+        //     console.log("must increase allowance.");
+        //     loading.setMessage(
+        //         "Please approve the Red Packet contract to spend your " +
+        //         erc_symbol +
+        //         " in MetaMask...",
+        //     );
+        //     let tx_approve = await erc.approve(
+        //         this.RED_PACKET_ADDR,
+        //         ethers.parseUnits("1000000000000000000", 18),
+        //     );
+        //     loading.setMessage("Please wait for blockchain confirmation...");
+        //     await tx_approve.wait(1);
+        //   }
+        // }
         loading.setMessage("Please sign transaction in MetaMask...");
-        value = tokenAddress === this.ETH_ADDRESS ? tokenAmount : 0;
+        // value = tokenAddress === this.ETH_ADDRESS ? tokenAmount : 0;
+        value = tokenAmount;
         console.log(
-            "tokenAddress = " +
+          "tokenAddress = " +
             tokenAddress +
             "\n" +
             "tokenAmount = " +
@@ -386,18 +411,16 @@ export default {
             conditionAddress +
             "\n" +
             "value = " +
-            value,
+            value
         );
-        let tx = await redPacket.create(
-            tokenAddress,
-            tokenAmount,
-            total,
-            bonusType,
-            passcodeHash,
-            conditionAddress,
-            {
-              value: value,
-            },
+        let tx = await redPacket.createHongbao(
+          passcodeHash,
+          total,
+          tokenAmount,
+          bonusType,
+          {
+            value: value,
+          }
         );
         loading.setMessage("Please wait for blockchain confirmation...");
         await tx.wait(1);
@@ -414,23 +437,24 @@ export default {
           }
         }
         loading.close();
+        // 显示结果，跳转到列表页
         let url =
-            location.protocol +
-            "//" +
-            location.host +
-            "/rp.html?chain=" +
-            chainId +
-            "&id=" +
-            redPacketId;
+          location.protocol +
+          "//" +
+          location.host +
+          "/rp.html?chain=" +
+          chainId +
+          "&id=" +
+          redPacketId;
         this.showInfo(
-            "Success",
-            "<p>Red packet created successfully!</p><p>Password: " +
+          "Success",
+          "<p>Red packet created successfully!</p><p>Password: " +
             password +
             '</p><p>You can share this red packet:</p><p><a target="_blank" href="' +
             url +
             '">' +
             url +
-            ' <i class="bi bi-box-arrow-up-right" /></a></p>',
+            ' <i class="bi bi-box-arrow-up-right" /></a></p>'
         );
       } catch (err) {
         loading.close();
@@ -448,14 +472,14 @@ export default {
       }
       return s;
     },
-    tokenUrl(addr) {
-      let c = this.BLOCKCHAINS[this.chainId];
-      if (c) {
-        return c.scan + "/token/" + addr;
-      } else {
-        return "#1";
-      }
-    },
+    // tokenUrl(addr) {
+    //   let c = this.BLOCKCHAINS[this.chainId];
+    //   if (c) {
+    //     return c.scan + "/token/" + addr;
+    //   } else {
+    //     return "#1";
+    //   }
+    // },
     gotoScanUrl() {
       let c = this.BLOCKCHAINS[this.chainId];
       if (c) {
@@ -466,9 +490,9 @@ export default {
     },
     displayBN(bn, decimals) {
       let BN100 = ethers.parseUnits("100", 0),
-          B = ethers.parseUnits("1000000000", decimals),
-          M = ethers.parseUnits("1000000", decimals),
-          K = ethers.parseUnits("1000", decimals);
+        B = ethers.parseUnits("1000000000", decimals),
+        M = ethers.parseUnits("1000000", decimals),
+        K = ethers.parseUnits("1000", decimals);
       if (bn.gte(B)) {
         return ethers.formatUnits(bn.mul(BN100).div(B), 2) + " B";
       }
@@ -480,8 +504,8 @@ export default {
       }
       // ##.###
       let s = ethers.formatUnits(bn, decimals),
-          n = s.indexOf("."),
-          pad;
+        n = s.indexOf("."),
+        pad;
       if (n === -1) {
         return s + ".000";
       }
@@ -493,7 +517,7 @@ export default {
     },
     formatBN(bn, decimals) {
       let s = ethers.formatUnits(bn, decimals),
-          n = s.indexOf(".");
+        n = s.indexOf(".");
       if (n == -1) {
         s = s + "." + "0".repeat(decimals);
       } else {
@@ -503,8 +527,8 @@ export default {
     },
     accountChanged(accounts) {
       console.log(
-          "wallet account changed:",
-          accounts.length === 0 ? null : accounts[0],
+        "wallet account changed:",
+        accounts.length === 0 ? null : accounts[0]
       );
       if (accounts.length === 0) {
         this.disconnected();
@@ -519,7 +543,7 @@ export default {
     },
     chainChanged(chainId) {
       console.log(
-          "wallet chainId changed: " + chainId + " = " + parseInt(chainId, 16),
+        "wallet chainId changed: " + chainId + " = " + parseInt(chainId, 16)
       );
       this.chainId = parseInt(chainId, 16);
     },
@@ -532,14 +556,14 @@ export default {
       console.log("enter 2");
       try {
         this.accountChanged(
-            await window.ethereum.request({
-              method: "eth_requestAccounts",
-            }),
+          await window.ethereum.request({
+            method: "eth_requestAccounts",
+          })
         );
         this.chainChanged(
-            await window.ethereum.request({
-              method: "eth_chainId",
-            }),
+          await window.ethereum.request({
+            method: "eth_chainId",
+          })
         );
         window.ethereum.on("disconnect", this.disconnected);
         window.ethereum.on("accountsChanged", this.accountChanged);
@@ -559,11 +583,11 @@ export default {
   <div>
     <!-- Loading Modal -->
     <div
-        id="loadingModal"
-        aria-hidden="true"
-        aria-labelledby="loadingLabel"
-        class="modal fade"
-        role="dialog"
+      id="loadingModal"
+      aria-hidden="true"
+      aria-labelledby="loadingLabel"
+      class="modal fade"
+      role="dialog"
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -588,21 +612,21 @@ export default {
     </div>
     <!-- Alert Modal -->
     <div
-        id="alertModal"
-        aria-hidden="true"
-        aria-labelledby="alertLabel"
-        class="modal fade"
-        role="dialog"
+      id="alertModal"
+      aria-hidden="true"
+      aria-labelledby="alertLabel"
+      class="modal fade"
+      role="dialog"
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header align-items-center d-flex">
             <h4 id="alertLabel" class="modal-title x-title">&nbsp;</h4>
             <button
-                aria-label="Close"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                type="button"
+              aria-label="Close"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              type="button"
             >
               <span aria-hidden="true"><i class="fe fe-x-circle"></i></span>
             </button>
@@ -617,9 +641,9 @@ export default {
           </div>
           <div class="modal-footer">
             <button
-                aria-label="Close"
-                class="btn btn-outline-primary"
-                data-bs-dismiss="modal"
+              aria-label="Close"
+              class="btn btn-outline-primary"
+              data-bs-dismiss="modal"
             >
               OK
             </button>
@@ -630,21 +654,21 @@ export default {
 
     <!-- Info Modal -->
     <div
-        id="infoModal"
-        aria-hidden="true"
-        aria-labelledby="infoLabel"
-        class="modal fade"
-        role="dialog"
+      id="infoModal"
+      aria-hidden="true"
+      aria-labelledby="infoLabel"
+      class="modal fade"
+      role="dialog"
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header align-items-center d-flex">
             <h4 id="infoLabel" class="modal-title x-title">&nbsp;</h4>
             <button
-                aria-label="Close"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                type="button"
+              aria-label="Close"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              type="button"
             >
               <span aria-hidden="true"><i class="fe fe-x-circle"></i></span>
             </button>
@@ -659,9 +683,9 @@ export default {
           </div>
           <div class="modal-footer">
             <button
-                aria-label="Close"
-                class="btn btn-outline-primary"
-                data-bs-dismiss="modal"
+              aria-label="Close"
+              class="btn btn-outline-primary"
+              data-bs-dismiss="modal"
             >
               OK
             </button>
@@ -672,50 +696,56 @@ export default {
 
     <div id="vm" class="container">
       <nav
-          class="navbar navbar-expand-lg navbar-light bg-light border-bottom"
-          style="position: fixed; top: 0; left: 0; right: 0; z-index: 99"
+        class="navbar navbar-expand-lg navbar-light bg-light border-bottom"
+        style="position: fixed; top: 0; left: 0; right: 0; z-index: 99"
       >
         <div class="container">
           <a class="navbar-brand" href="#0"
-          ><i class="bi bi-envelope-paper"/> Red Packet</a
+            ><i class="bi bi-envelope-paper" /> Red Packet</a
           >
-          <ul class="mr-2 navbar-nav" @click="toList">
+          <ul class="mr-2 navbar-nav">
             <li class="nav-item">
-              <a class="nav-link">
-                <i class="bi bi-list-ul"/>
+              <a class="nav-link" @click="toList">
+                <i class="bi bi-list-ul" />
                 Explore
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" @click="toReceive">
+                <i class="bi bi-list-ul" />
+                Receive
               </a>
             </li>
           </ul>
           <ul
-              id="wallet"
-              class="mr-2 navbar-nav navbar-right-wrap"
-              style="flex-direction: row !important"
+            id="wallet"
+            class="mr-2 navbar-nav navbar-right-wrap"
+            style="flex-direction: row !important"
           >
             <li class="nav-item">
               <span class="nav-link"
-              ><i class="bi bi-globe"/> <span v-text="networkName"></span
+                ><i class="bi bi-globe" /> <span v-text="networkName"></span
               ></span>
             </li>
             <li v-if="account === null" class="nav-item">
               <button
-                  class="btn btn-primary"
-                  type="button"
-                  v-on:click="connectWallet"
+                class="btn btn-primary"
+                type="button"
+                v-on:click="connectWallet"
               >
                 Connect Wallet
               </button>
             </li>
             <li v-if="account !== null" class="nav-item">
               <a class="nav-link" href="#0" v-on:click="gotoScanUrl"
-              ><i class="bi bi-wallet"/>
+                ><i class="bi bi-wallet" />
                 <span v-text="abbrAddress(account)"></span>
                 <i class="fe fe-external-link"></i
-                ></a>
+              ></a>
             </li>
             <li v-if="wrongNetwork" class="ms-2 d-inline-block">
               <span class="nav-link"
-              >Unsupported chain (<span v-text="chainId"></span>)</span
+                >Unsupported chain (<span v-text="chainId"></span>)</span
               >
             </li>
           </ul>
@@ -735,45 +765,45 @@ export default {
               </p>
               <p id="mainnetList">
                 <a
-                    v-for="(chain, idx) in mainnets"
-                    :href="'chain.scan/address/' + RED_PACKET_ADDR"
-                    class="me-4l"
-                    target="_blank"
+                  v-for="(chain, idx) in mainnets"
+                  :href="'chain.scan/address/' + RED_PACKET_ADDR"
+                  class="me-4l"
+                  target="_blank"
                 >
                   {{ chain.name }}
-                  <i class="bi bi-box-arrow-up-right"/>
+                  <i class="bi bi-box-arrow-up-right" />
                 </a>
               </p>
               <p id="testnetList">
                 <a
-                    v-for="(chain, idx) in testnets"
-                    :href="'chain.scan/address/' + RED_PACKET_ADDR"
-                    class="me-4l"
-                    target="_blank"
+                  v-for="(chain, idx) in testnets"
+                  :href="'chain.scan/address/' + RED_PACKET_ADDR"
+                  class="me-4l"
+                  target="_blank"
                 >
                   {{ chain.name }}
-                  <i class="bi bi-box-arrow-up-right"/>
+                  <i class="bi bi-box-arrow-up-right" />
                 </a>
               </p>
               <p>
                 Make sure you have tested on testnet before use the mainnet.
                 (e.g. test with
                 <a
-                    href="https://blockscan.com/address/0xBBB02DE94E1Dd1E99b43458027f31aBb2d75659B"
-                    target="_blank"
-                >tWBTC <i class="bi bi-box-arrow-up-right"></i
+                  href="https://blockscan.com/address/0xBBB02DE94E1Dd1E99b43458027f31aBb2d75659B"
+                  target="_blank"
+                  >tWBTC <i class="bi bi-box-arrow-up-right"></i
                 ></a>
                 ,
                 <a
-                    href="https://blockscan.com/address/0xEEE0C84193E02E67164b9b4402e47ef9CffA5b09"
-                    target="_blank"
-                >tWETH <i class="bi bi-box-arrow-up-right"></i
+                  href="https://blockscan.com/address/0xEEE0C84193E02E67164b9b4402e47ef9CffA5b09"
+                  target="_blank"
+                  >tWETH <i class="bi bi-box-arrow-up-right"></i
                 ></a>
                 ,
                 <a
-                    href="https://blockscan.com/address/0xDDD076E315e288a7146E8c8612a57Baae4Df21C7"
-                    target="_blank"
-                >tUSD <i class="bi bi-box-arrow-up-right"></i
+                  href="https://blockscan.com/address/0xDDD076E315e288a7146E8c8612a57Baae4Df21C7"
+                  target="_blank"
+                  >tUSD <i class="bi bi-box-arrow-up-right"></i
                 ></a>
                 . Use faucet() to get test token.)
               </p>
@@ -788,7 +818,7 @@ export default {
               <div class="card">
                 <div class="card-body">
                   <h5 class="card-title">Create a Red Packet</h5>
-                  <hr/>
+                  <hr />
                   <form onsubmit="return false">
                     <!-- <div class="mb-3">
                       <label class="form-label">Bonus:</label>
@@ -864,14 +894,14 @@ export default {
                     </div> -->
                     <div class="mb-3">
                       <label class="form-label" for="bonus-amount"
-                      >Bonus Amount:</label
+                        >Bonus Amount:</label
                       >
                       <input
-                          id="bonus-amount"
-                          v-model="tokenAmount"
-                          class="form-control"
-                          maxlength="42"
-                          type="text"
+                        id="bonus-amount"
+                        v-model="tokenAmount"
+                        class="form-control"
+                        maxlength="42"
+                        type="text"
                       />
                       <div class="form-text">
                         The amount of bonus you want to sent.
@@ -879,15 +909,15 @@ export default {
                     </div>
                     <div class="mb-3">
                       <label class="form-label" for="bonus-amount"
-                      >Max Participates:</label
+                        >Max Participates:</label
                       >
                       <input
-                          id="bonus-amount"
-                          v-model:number="total"
-                          class="form-control"
-                          max="100000"
-                          min="1"
-                          type="number"
+                        id="bonus-amount"
+                        v-model:number="total"
+                        class="form-control"
+                        max="100000"
+                        min="1"
+                        type="number"
                       />
                       <div class="form-text">
                         The max participates who can get the bonus.
@@ -898,12 +928,12 @@ export default {
                       <div class="form-check">
                         <label class="form-check-label">
                           <input
-                              id="bonus-type-identical"
-                              v-model="bonusType"
-                              class="form-check-input"
-                              name="bonusType"
-                              type="radio"
-                              value="0"
+                            id="bonus-type-identical"
+                            v-model="bonusType"
+                            class="form-check-input"
+                            name="bonusType"
+                            type="radio"
+                            value="0"
                           />
                           Identical for Each
                         </label>
@@ -911,12 +941,12 @@ export default {
                       <div class="form-check">
                         <label class="form-check-label">
                           <input
-                              id="bonus-type-random"
-                              v-model="bonusType"
-                              class="form-check-input"
-                              name="bonusType"
-                              type="radio"
-                              value="1"
+                            id="bonus-type-random"
+                            v-model="bonusType"
+                            class="form-check-input"
+                            name="bonusType"
+                            type="radio"
+                            value="1"
                           />
                           Random for Each
                         </label>
@@ -924,15 +954,15 @@ export default {
                     </div>
                     <div class="mb-3">
                       <label class="form-label" for="bonus-password"
-                      >Password:</label
+                        >Password:</label
                       >
                       <input
-                          id="bonus-password"
-                          v-model="password"
-                          class="form-control"
-                          maxlength="100"
-                          placeholder="e.g. Bitcoin is awesome!"
-                          type="text"
+                        id="bonus-password"
+                        v-model="password"
+                        class="form-control"
+                        maxlength="100"
+                        placeholder="e.g. Bitcoin is awesome!"
+                        type="text"
                       />
                       <div class="form-text">
                         The case-sensitive password to open the red packet.
@@ -965,9 +995,9 @@ export default {
                     </div> -->
                     <div class="mb-2 text-center">
                       <button
-                          class="btn btn-primary ps-5 pe-5"
-                          type="button"
-                          v-on:click="createRedPacket"
+                        class="btn btn-primary ps-5 pe-5"
+                        type="button"
+                        v-on:click="createRedPacket"
                       >
                         Send
                       </button>
@@ -986,29 +1016,29 @@ export default {
         <div class="row">
           <div class="col-12">
             <div class="mb-4">
-              <i class="bi bi-envelope-paper"/> Red Packet, copyleft 2023
+              <i class="bi bi-envelope-paper" /> Red Packet, copyleft 2023
             </div>
             <ul class="list-unstyled small text-muted">
               <li class="mb-2">
                 Designed and built by
                 <a href="https://github.com/michaelliao" target="_blank"
-                >Michael Liao <i class="bi bi-box-arrow-up-right"/></a
+                  >Michael Liao <i class="bi bi-box-arrow-up-right" /></a
                 >.
               </li>
               <li class="mb-2">
                 Check the source code on
                 <a
-                    href="https://github.com/michaelliao/red-packet-contract"
-                    target="_blank"
-                >Github <i class="bi bi-box-arrow-up-right"></i
+                  href="https://github.com/michaelliao/red-packet-contract"
+                  target="_blank"
+                  >Github <i class="bi bi-box-arrow-up-right"></i
                 ></a>
               </li>
               <li class="mb-2">
                 Code licensed
                 <a
-                    href="https://github.com/michaelliao/red-packet-contract/blob/master/LICENSE"
-                    target="_blank"
-                >GPLv3 <i class="bi bi-box-arrow-up-right"></i
+                  href="https://github.com/michaelliao/red-packet-contract/blob/master/LICENSE"
+                  target="_blank"
+                  >GPLv3 <i class="bi bi-box-arrow-up-right"></i
                 ></a>
               </li>
             </ul>
