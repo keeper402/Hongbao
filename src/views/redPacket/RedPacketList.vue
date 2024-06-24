@@ -388,7 +388,7 @@ export default {
           left: 0;
           right: 0;
           z-index: 99;
-          background-image: url(@/assets/img/nav.png);
+          background-image: url(~../../assets/img/nav.png);
           background-size: cover;
         "
       >

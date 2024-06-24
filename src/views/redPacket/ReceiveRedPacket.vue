@@ -1,9 +1,9 @@
 <script>
-import { getWeb3Provider } from "@/utils/WalletUtil";
-import { chains } from "@/assets/js/chains";
-import { RedPacket, Token } from "@/utils/RedPacket";
-import { ethers, JsonRpcProvider } from "ethers";
-import { groth16 } from "snarkjs";
+import {getWeb3Provider} from "@/utils/WalletUtil";
+import {chains} from "@/assets/js/chains";
+import {RedPacket} from "@/utils/RedPacket";
+import {ethers, JsonRpcProvider} from "ethers";
+import {groth16} from "snarkjs";
 import Consts from "@/utils/Consts";
 
 export default {
@@ -73,7 +73,7 @@ export default {
           }
         }
       }
-      return "@/assets/icons/default.svg";
+      return require("@/assets/icons/default.svg");
     },
     displayOpenInfo() {
       return this.redPacket.getRpDisplayOpenInfo();
@@ -90,7 +90,7 @@ export default {
       if (i) {
         return i;
       }
-      return "@/assets/img/open-1.svg";
+      return require("@/assets/img/open-1.svg");
     },
     canCustomize() {
       return (
@@ -808,7 +808,7 @@ export default {
           right: 0;
           z-index: 99;
           background-color: red;
-          background-image: url(@/assets/img/nav.png);
+          background-image: url(~../../assets/img/nav.png);
           background-size: cover;
         "
       >
