@@ -9,51 +9,16 @@ export default {
   data() {
     return {
       account: null,
-      chainId: 31337, // @TODO: local Mantle Testnet test
-      tokenType: "GO",
-      tokenAddress: "",
+      chainId: "",
       tokenAmount: "1.0",
       total: 7,
       bonusType: "0", // 0=Identical, 1=Random
       password: "",
-      conditionAddress: "",
-      BLOCKCHAINS: chains.BLOCKCHAINS,
-      ETH_ADDRESS: chains.ETH_ADDRESS,
-      ZERO_ADDRESS: chains.ZERO_ADDRESS,
-      mainnets: [],
-      testnets: [],
-      // RED_PACKET_ADDR: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-      // RED_PACKET_ABI:
-      //   '[{"inputs":[{"internalType":"address","name":"verifierAddr","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"passwordHash","type":"uint256"},{"indexed":true,"internalType":"address","name":"claimer","type":"address"},{"indexed":false,"internalType":"uint256","name":"claimAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"remaining","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"remainingAmount","type":"uint256"}],"name":"HongbaoClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"passwordHash","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"total","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"address","name":"creator","type":"address"},{"indexed":false,"internalType":"enum Hongbao.ReceiveType","name":"receiveType","type":"uint8"}],"name":"HongbaoCreated","type":"event"},{"inputs":[{"internalType":"uint256","name":"passwordHash","type":"uint256"},{"internalType":"uint256[]","name":"proof","type":"uint256[]"}],"name":"claimHongbao","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"passwordHash","type":"uint256"},{"internalType":"uint256","name":"total","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"enum Hongbao.ReceiveType","name":"receiveType","type":"uint8"}],"name":"createHongbao","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"defaultVerifier","outputs":[{"internalType":"contract Verifier","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"keyHash","type":"uint256"}],"name":"getRemainingAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"data","type":"uint256[]"}],"name":"printUint256Array","outputs":[],"stateMutability":"pure","type":"function"}]',
-      CONDITION_ABI:
-        '[{"inputs":[{"internalType":"address","name":"redpacketContract","type":"address"},{"internalType":"uint256","name":"redpacketId","type":"uint256"},{"internalType":"address","name":"operator","type":"address"}],"name":"check","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}]',
-      ERC20_ABI:
-        '[{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]',
       CREATE_TOPIC:
         "0xf526b6d6ff0fac13f7e16aeea0f08bc8f0789c188dc429de0ea4b56bc06e82c6",
     };
   },
   computed: {
-    // nativeToken() {
-    //   let c = this.BLOCKCHAINS[this.chainId];
-    //   if (c) {
-    //     return c.native;
-    //   }
-    //   return "ETH";
-    // },
-    // popularTokens() {
-    //   let c = this.BLOCKCHAINS[this.chainId];
-    //   if (c) {
-    //     let ts = [];
-    //     for (let t of c.tokens) {
-    //       if (ts.length < 10 && t.address !== this.ETH_ADDRESS) {
-    //         ts.push(t);
-    //       }
-    //     }
-    //     return ts;
-    //   }
-    //   return [];
-    // },
     ready() {
       return this.account && this.chainId > 0;
     },
@@ -86,22 +51,7 @@ export default {
     toReceive() {
       this.$router.push("/receive");
     },
-    init() {
-      let mainnets = [],
-        testnets = [];
-      for (let chainId in this.BLOCKCHAINS) {
-        let chain = this.BLOCKCHAINS[chainId];
-        if (chain.testnet) {
-          testnets.push(chain);
-        } else {
-          mainnets.push(chain);
-        }
-      }
-      mainnets.sort((c1, c2) => c1.id - c2.id);
-      testnets.sort((c1, c2) => c1.id - c2.id);
-      this.mainnets = mainnets;
-      this.testnets = testnets;
-    },
+    init() {},
     keccak(str) {
       let arr = new TextEncoder().encode(str);
       return ethers.keccak256(arr);
@@ -220,13 +170,9 @@ export default {
       }*/
       return err.message || err.toString();
     },
-    // setPopularToken(t) {
-    //   this.tokenAddress = t.address;
-    // },
     async createRedPacket() {
       // check:
       let chainId = this.chainId,
-        tokenAddress,
         tokenAmount,
         decimals,
         total,
@@ -235,7 +181,6 @@ export default {
         account,
         passcode,
         passcodeHash,
-        conditionAddress = this.ZERO_ADDRESS,
         value,
         redPacketId = 0;
       if (!this.ready) {
@@ -247,44 +192,6 @@ export default {
           "The connected network is not supported!"
         );
       }
-      // important: account must be lowercase:
-      // account = this.account.toLowerCase();
-      // if (this.tokenType === "ETH") {
-      //   tokenAddress = this.ETH_ADDRESS;
-      //   decimals = 18;
-      // } else {
-      //   if (!this.isValidAddress(this.tokenAddress)) {
-      //     return this.showAlert("Error", "Token address is invalid!");
-      //   }
-      //   tokenAddress = this.tokenAddress;
-      //   let loading1 = this.showLoading(
-      //           "Get ERC Token",
-      //           "Get ERC token information...",
-      //       ),
-      //       erc1 = new ethers.Contract(
-      //           tokenAddress,
-      //           this.ERC20_ABI,
-      //           getWeb3Provider().getSigner(),
-      //       );
-      //   try {
-      //     decimals = await erc1.decimals();
-      //     loading1.close();
-      //     console.log(
-      //         "got erc " +
-      //         tokenAddress +
-      //         " decimals = " +
-      //         decimals +
-      //         " type = " +
-      //         typeof decimals,
-      //     );
-      //   } catch (err) {
-      //     loading1.close();
-      //     return this.showAlert(
-      //         "Error",
-      //         "Failed to get decimals of token: " + this.translateError(err),
-      //     );
-      //   }
-      // }
       // check tokenAmount:
       if (!this.isValidBN(this.tokenAmount, decimals)) {
         return this.showAlert("Error", "Bonus amount is invalid!");
@@ -300,32 +207,6 @@ export default {
       if (password === "") {
         return this.showAlert("Error", "Password must be set!");
       }
-      // check condition:
-      // if (this.conditionAddress.trim() !== "") {
-      //   if (!this.isValidAddress(this.conditionAddress)) {
-      //     return this.showAlert("Error", "Validator address is invalid!");
-      //   }
-      //   conditionAddress = this.conditionAddress;
-      //   let loading2 = this.showLoading(
-      //           "Check Validator",
-      //           "Check validator contract...",
-      //       ),
-      //       cc = new ethers.Contract(
-      //           conditionAddress,
-      //           this.CONDITION_ABI,
-      //           getWeb3Provider().getSigner(),
-      //       );
-      //   try {
-      //     await cc.check(this.RED_PACKET_ADDR, 1, account);
-      //     loading2.close();
-      //   } catch (err) {
-      //     loading2.close();
-      //     return this.showAlert(
-      //         "Error",
-      //         "Failed to check validator contract: " + this.translateError(err),
-      //     );
-      //   }
-      // }
 
       // now generate password hash:
       // passcode = BigInt(this.keccak(account + password));
@@ -390,10 +271,7 @@ export default {
         // value = tokenAddress === this.ETH_ADDRESS ? tokenAmount : 0;
         value = tokenAmount;
         console.log(
-          "tokenAddress = " +
-            tokenAddress +
-            "\n" +
-            "tokenAmount = " +
+          "tokenAmount = " +
             tokenAmount +
             ", type = " +
             typeof tokenAmount +
@@ -406,9 +284,6 @@ export default {
             "\n" +
             "passcodeHash = " +
             passcodeHash +
-            "\n" +
-            "conditionAddress = " +
-            conditionAddress +
             "\n" +
             "value = " +
             value
@@ -472,21 +347,13 @@ export default {
       }
       return s;
     },
-    // tokenUrl(addr) {
-    //   let c = this.BLOCKCHAINS[this.chainId];
-    //   if (c) {
-    //     return c.scan + "/token/" + addr;
-    //   } else {
-    //     return "#1";
-    //   }
-    // },
     gotoScanUrl() {
-      let c = this.BLOCKCHAINS[this.chainId];
-      if (c) {
-        window.open(c.scan + "/address/" + this.account);
-      } else {
-        console.error("Invalid chain id: ", this.chainId);
-      }
+      // let c = this.BLOCKCHAINS[this.chainId];
+      // if (c) {
+      //   window.open(c.scan + "/address/" + this.account);
+      // } else {
+      //   console.error("Invalid chain id: ", this.chainId);
+      // }
     },
     displayBN(bn, decimals) {
       let BN100 = ethers.parseUnits("100", 0),
@@ -696,7 +563,7 @@ export default {
 
     <div id="vm" class="container">
       <nav
-        class="navbar navbar-expand-lg navbar-light bg-light border-bottom"
+        class="navbar navbar-expand-lg navbar-light border-bottom nav-bg"
         style="position: fixed; top: 0; left: 0; right: 0; z-index: 99"
       >
         <div class="container">
@@ -729,7 +596,7 @@ export default {
             </li>
             <li v-if="account === null" class="nav-item">
               <button
-                class="btn btn-primary"
+                class="btn btn-light"
                 type="button"
                 v-on:click="connectWallet"
               >
@@ -743,74 +610,16 @@ export default {
                 <i class="fe fe-external-link"></i
               ></a>
             </li>
-            <li v-if="wrongNetwork" class="ms-2 d-inline-block">
+            <!-- <li v-if="wrongNetwork" class="ms-2 d-inline-block">
               <span class="nav-link"
                 >Unsupported chain (<span v-text="chainId"></span>)</span
               >
-            </li>
+            </li> -->
           </ul>
         </div>
       </nav>
 
       <div style="padding-top: 80px">
-        <div class="row">
-          <div class="col">
-            <div class="x-border">
-              <h5>Introduction</h5>
-              <p>
-                The Red Packet is an Ethereum contract that support distribute
-                bonus with lucky. A lucky guy who want to get the bonus must
-                know the password that is set by creator. It uses zk-proof to
-                make all things safe. Supported chains:
-              </p>
-              <p id="mainnetList">
-                <a
-                  v-for="(chain, idx) in mainnets"
-                  :href="'chain.scan/address/' + RED_PACKET_ADDR"
-                  class="me-4l"
-                  target="_blank"
-                >
-                  {{ chain.name }}
-                  <i class="bi bi-box-arrow-up-right" />
-                </a>
-              </p>
-              <p id="testnetList">
-                <a
-                  v-for="(chain, idx) in testnets"
-                  :href="'chain.scan/address/' + RED_PACKET_ADDR"
-                  class="me-4l"
-                  target="_blank"
-                >
-                  {{ chain.name }}
-                  <i class="bi bi-box-arrow-up-right" />
-                </a>
-              </p>
-              <p>
-                Make sure you have tested on testnet before use the mainnet.
-                (e.g. test with
-                <a
-                  href="https://blockscan.com/address/0xBBB02DE94E1Dd1E99b43458027f31aBb2d75659B"
-                  target="_blank"
-                  >tWBTC <i class="bi bi-box-arrow-up-right"></i
-                ></a>
-                ,
-                <a
-                  href="https://blockscan.com/address/0xEEE0C84193E02E67164b9b4402e47ef9CffA5b09"
-                  target="_blank"
-                  >tWETH <i class="bi bi-box-arrow-up-right"></i
-                ></a>
-                ,
-                <a
-                  href="https://blockscan.com/address/0xDDD076E315e288a7146E8c8612a57Baae4Df21C7"
-                  target="_blank"
-                  >tUSD <i class="bi bi-box-arrow-up-right"></i
-                ></a>
-                . Use faucet() to get test token.)
-              </p>
-            </div>
-          </div>
-        </div>
-
         <!-- create red packet -->
         <div class="row mt-4">
           <div class="col">
@@ -820,78 +629,6 @@ export default {
                   <h5 class="card-title">Create a Red Packet</h5>
                   <hr />
                   <form onsubmit="return false">
-                    <!-- <div class="mb-3">
-                      <label class="form-label">Bonus:</label>
-                      <div class="form-check">
-                        <label class="form-check-label">
-                          <input
-                            v-model="tokenType"
-                            class="form-check-input"
-                            name="tokenType"
-                            type="radio"
-                            value="ETH"
-                          />
-                          <span v-text="nativeToken"></span>
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <label class="form-check-label">
-                          <input
-                            v-model="tokenType"
-                            class="form-check-input"
-                            name="tokenType"
-                            type="radio"
-                            value="ERC"
-                          />
-                          ERC20
-                        </label>
-                      </div>
-                    </div>
-                    <div class="mb-3 ms-4">
-                      <label class="form-label" for="bonus-token"
-                        >Token Address:</label
-                      >
-                      <div class="input-group">
-                        <input
-                          id="bonus-token"
-                          v-model="tokenAddress"
-                          class="form-control"
-                          maxlength="42"
-                          placeholder="0x"
-                          type="text"
-                          v-bind:disabled="tokenType === 'ETH'"
-                        />
-                        <button
-                          class="btn btn-outline-secondary dropdown-toggle"
-                          data-bs-toggle="dropdown"
-                          type="button"
-                          v-bind:disabled="tokenType === 'ETH'"
-                        >
-                          <i class="bi bi-coin" />
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                          <li v-for="token in popularTokens">
-                            <button
-                              class="dropdown-item"
-                              type="button"
-                              v-on:click="setPopularToken(token)"
-                            >
-                              <img
-                                :src="token.icon"
-                                style="
-                                  width: 16px;
-                                  height: 16px;
-                                  margin-top: -2px;
-                                  margin-right: 10px;
-                                "
-                              />
-                              <span v-text="token.symbol"></span>
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="form-text">The token you want to sent.</div>
-                    </div> -->
                     <div class="mb-3">
                       <label class="form-label" for="bonus-amount"
                         >Bonus Amount:</label
@@ -1011,7 +748,7 @@ export default {
       </div>
     </div>
 
-    <footer class="p-5 mt-5 bg-light border-top">
+    <!-- <footer class="p-5 mt-5 bg-light border-top">
       <div class="container">
         <div class="row">
           <div class="col-12">
@@ -1045,7 +782,7 @@ export default {
           </div>
         </div>
       </div>
-    </footer>
+    </footer> -->
   </div>
 </template>
 

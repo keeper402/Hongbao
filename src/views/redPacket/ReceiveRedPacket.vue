@@ -1,9 +1,9 @@
 <script>
-import {getWeb3Provider} from "@/utils/WalletUtil";
-import {chains} from "@/assets/js/chains";
-import {RedPacket} from "@/utils/RedPacket";
-import {ethers, JsonRpcProvider} from "ethers";
-import {groth16} from "snarkjs";
+import { getWeb3Provider } from "@/utils/WalletUtil";
+import { chains } from "@/assets/js/chains";
+import { RedPacket } from "@/utils/RedPacket";
+import { ethers, JsonRpcProvider } from "ethers";
+import { groth16 } from "snarkjs";
 import Consts from "@/utils/Consts";
 
 export default {
@@ -11,7 +11,6 @@ export default {
     return {
       account: null,
       chainId: 0,
-      loaded: false,
       loading: false,
       opened: false,
       bonusBN: null,
@@ -20,9 +19,9 @@ export default {
       token: null,
       redPacket: new RedPacket(),
       version: 0, // just used to update computed property
-      BLOCKCHAINS: chains.BLOCKCHAINS,
-      ETH_ADDRESS: chains.ETH_ADDRESS,
-      ZERO_ADDRESS: chains.ZERO_ADDRESS,
+      // BLOCKCHAINS: chains.BLOCKCHAINS,
+      // ETH_ADDRESS: chains.ETH_ADDRESS,
+      // ZERO_ADDRESS: chains.ZERO_ADDRESS,
     };
   },
   computed: {
@@ -58,21 +57,21 @@ export default {
       }
     },
     tokenIconUrl() {
-      const icon = this.redPacket.getRpIconImage();
-      if (icon) {
-        return icon;
-      }
-      if (this.token && this.token.address) {
-        let ch = this.BLOCKCHAINS[this.redPacket.chain];
-        if (ch) {
-          const t = ch.tokens.find(
-            (t) => t.address === this.token.address.toLowerCase()
-          );
-          if (t) {
-            return t.icon;
-          }
-        }
-      }
+      // const icon = this.redPacket.getRpIconImage();
+      // if (icon) {
+      //   return icon;
+      // }
+      // if (this.token && this.token.address) {
+      //   let ch = this.BLOCKCHAINS[this.redPacket.chain];
+      //   if (ch) {
+      //     const t = ch.tokens.find(
+      //       (t) => t.address === this.token.address.toLowerCase()
+      //     );
+      //     if (t) {
+      //       return t.icon;
+      //     }
+      //   }
+      // }
       return require("@/assets/icons/default.svg");
     },
     displayOpenInfo() {
@@ -108,23 +107,28 @@ export default {
       return !!this.account;
     },
     networkName() {
+      // if (this.account) {
+      //   if (this.chainId === this.redPacket.chain) {
+      //     let c = this.BLOCKCHAINS[this.chainId];
+      //     if (c) {
+      //       return c.name;
+      //     }
+      //   }
+      //   return "Unsupported Network (0x" + this.chainId.toString(16) + ")";
+      // }
+      // return "Not Connected";
       if (this.account) {
-        if (this.chainId === this.redPacket.chain) {
-          let c = this.BLOCKCHAINS[this.chainId];
-          if (c) {
-            return c.name;
-          }
-        }
-        return "Unsupported Network (0x" + this.chainId.toString(16) + ")";
+        return "Chain (0x" + this.chainId.toString(16) + ")";
       }
-      return "Not Connected";
+      return "Not connected";
     },
     correctNetworkName() {
-      let c = this.BLOCKCHAINS[this.redPacket.chain];
-      if (c) {
-        return c.name;
-      }
-      return "Chain (0x" + this.redPacket.chain.toString(16) + ")";
+      // let c = this.BLOCKCHAINS[this.redPacket.chain];
+      // if (c) {
+      //   return c.name;
+      // }
+      // return "Chain (0x" + this.redPacket.chain.toString(16) + ")";
+      return "Chain (0x" + this.chainId.toString(16) + ")";
     },
   },
   created() {
@@ -133,7 +137,7 @@ export default {
   methods: {
     async init() {
       await this.connectWallet();
-      await this.loadRedPacket();
+      // await this.loadRedPacket();
       // if (this.redPacket.preview) {
       //   // show customize:
       //   let $customize = $("#customize"),
@@ -159,33 +163,36 @@ export default {
       //   $("#customize").show();
       // }
     },
-    preview() {
-      this.connectWallet();
-      this.loadRedPacket();
-      // if (this.redPacket.preview) {
-      //   // show customize:
-      //   let $customize = $("#customize"),
-      //     $chain = $customize.find("input[name=chain]"),
-      //     $id = $customize.find("input[name=id]"),
-      //     $rpGreeting = $customize.find("input[name=rpGreeting]"),
-      //     $rpCreator = $customize.find("input[name=rpCreator]"),
-      //     $rpCoverImage = $customize.find("input[name=rpCoverImage]"),
-      //     $rpOpenImage = $customize.find("input[name=rpOpenImage]"),
-      //     $rpIconImage = $customize.find("input[name=rpIconImage]"),
-      //     $rpDisplayOpenInfo = $customize.find("input[name=rpDisplayOpenInfo]");
-      //   $chain.val(this.redPacket.chain);
-      //   $id.val(this.redPacket.id);
-      //   $rpGreeting.val(this.redPacket.getRpGreeting());
-      //   $rpCreator.val(this.redPacket.getRpCreator(this.redPacket.creator));
-      //   $rpCoverImage.val(this.redPacket.getRpCoverImage());
-      //   $rpOpenImage.val(this.redPacket.getRpOpenImage());
-      //   $rpIconImage.val(this.redPacket.getRpIconImage());
-      //   $rpDisplayOpenInfo.prop(
-      //     "checked",
-      //     !this.redPacket.getRpDisplayOpenInfo()
-      //   );
-      //   $("#customize").show();
-      // }
+    // preview() {
+    //   this.connectWallet();
+    //   this.loadRedPacket();
+    // if (this.redPacket.preview) {
+    //   // show customize:
+    //   let $customize = $("#customize"),
+    //     $chain = $customize.find("input[name=chain]"),
+    //     $id = $customize.find("input[name=id]"),
+    //     $rpGreeting = $customize.find("input[name=rpGreeting]"),
+    //     $rpCreator = $customize.find("input[name=rpCreator]"),
+    //     $rpCoverImage = $customize.find("input[name=rpCoverImage]"),
+    //     $rpOpenImage = $customize.find("input[name=rpOpenImage]"),
+    //     $rpIconImage = $customize.find("input[name=rpIconImage]"),
+    //     $rpDisplayOpenInfo = $customize.find("input[name=rpDisplayOpenInfo]");
+    //   $chain.val(this.redPacket.chain);
+    //   $id.val(this.redPacket.id);
+    //   $rpGreeting.val(this.redPacket.getRpGreeting());
+    //   $rpCreator.val(this.redPacket.getRpCreator(this.redPacket.creator));
+    //   $rpCoverImage.val(this.redPacket.getRpCoverImage());
+    //   $rpOpenImage.val(this.redPacket.getRpOpenImage());
+    //   $rpIconImage.val(this.redPacket.getRpIconImage());
+    //   $rpDisplayOpenInfo.prop(
+    //     "checked",
+    //     !this.redPacket.getRpDisplayOpenInfo()
+    //   );
+    //   $("#customize").show();
+    // }
+    // },
+    toSend() {
+      this.$router.push("/");
     },
     toList() {
       this.$router.push("/list");
@@ -235,7 +242,7 @@ export default {
       //   backdrop: "static",
       //   keyboard: false,
       // });
-      myModal.show();
+      // myModal.show();
       alert(title + " _ " + message);
     },
 
@@ -299,49 +306,49 @@ export default {
       return err.message || err.toString();
     },
 
-    async loadRedPacket() {
-      if (this.loaded) {
-        return;
-      }
-      // let useInjectedProvider = this.chainId === this.redPacket.chain;
-      console.log("start load redpacket...");
-      this.loading = true;
-      try {
-        // let provider = useInjectedProvider
-        //     ? getWeb3Provider()
-        //     : this.getRpcProvider(this.BLOCKCHAINS[this.redPacket.chain].rpc);
-        const signer = await getWeb3Provider().getSigner();
-        const rpContract = new ethers.Contract(
-          Consts.redPacketAddress,
-          Consts.redPacketABI,
-          signer
-        );
-        // const rp = await rpContract.getRedPacket(this.redPacket.id);
-        // console.log("loaded red packet:", rp);
-        // this.redPacket.setRedPacketInfo(rp);
-        // this.redPacket.verifyParams();
-        this.version++;
-        // if (this.redPacket.token.toLowerCase() === this.ETH_ADDRESS) {
-        //   let c = this.BLOCKCHAINS[this.redPacket.chain],
-        //     symbol = (c && c.native) || "ETH";
-        //   this.token = new Token(this.ETH_ADDRESS, symbol, 18);
-        // } else {
-        //   // load ERC:
-        //   let ercContract = new ethers.Contract(
-        //       this.redPacket.token,
-        //       this.redPacket.erc20ABI,
-        //       useInjectedProvider ? provider.getSigner() : provider
-        //     ),
-        //     symbol = await ercContract.symbol(),
-        //     decimals = await ercContract.decimals();
-        //   this.token = new Token(this.redPacket.token, symbol, decimals);
-        // }
-        this.loaded = true;
-      } catch (err) {
-        console.error(err);
-      }
-      this.loading = false;
-    },
+    // async loadRedPacket() {
+    //   if (this.loaded) {
+    //     return;
+    //   }
+    // let useInjectedProvider = this.chainId === this.redPacket.chain;
+    // console.log("start load redpacket...");
+    // this.loading = true;
+    // try {
+    // let provider = useInjectedProvider
+    //     ? getWeb3Provider()
+    //     : this.getRpcProvider(this.BLOCKCHAINS[this.redPacket.chain].rpc);
+    // const signer = await getWeb3Provider().getSigner();
+    // const rpContract = new ethers.Contract(
+    //   Consts.redPacketAddress,
+    //   Consts.redPacketABI,
+    //   signer
+    // );
+    // const rp = await rpContract.getRedPacket(this.redPacket.id);
+    // console.log("loaded red packet:", rp);
+    // this.redPacket.setRedPacketInfo(rp);
+    // this.redPacket.verifyParams();
+    // this.version++;
+    // if (this.redPacket.token.toLowerCase() === this.ETH_ADDRESS) {
+    //   let c = this.BLOCKCHAINS[this.redPacket.chain],
+    //     symbol = (c && c.native) || "ETH";
+    //   this.token = new Token(this.ETH_ADDRESS, symbol, 18);
+    // } else {
+    //   // load ERC:
+    //   let ercContract = new ethers.Contract(
+    //       this.redPacket.token,
+    //       this.redPacket.erc20ABI,
+    //       useInjectedProvider ? provider.getSigner() : provider
+    //     ),
+    //     symbol = await ercContract.symbol(),
+    //     decimals = await ercContract.decimals();
+    //   this.token = new Token(this.redPacket.token, symbol, decimals);
+    // }
+    //     this.loaded = true;
+    //   } catch (err) {
+    //     console.error(err);
+    //   }
+    //   this.loading = false;
+    // },
     async signUrl() {
       try {
         if (!this.account) {
@@ -555,21 +562,13 @@ export default {
       }
       return s;
     },
-    tokenUrl(addr) {
-      let c = this.BLOCKCHAINS[this.chainId];
-      if (c) {
-        return c.scan + "/token/" + addr;
-      } else {
-        return "#1";
-      }
-    },
     gotoScanUrl() {
-      let c = this.BLOCKCHAINS[this.chainId];
-      if (c) {
-        window.open(c.scan + "/address/" + this.account);
-      } else {
-        console.error("Invalid chain id: ", this.chainId);
-      }
+      // let c = this.BLOCKCHAINS[this.chainId];
+      // if (c) {
+      //   window.open(c.scan + "/address/" + this.account);
+      // } else {
+      //   console.error("Invalid chain id: ", this.chainId);
+      // }
     },
     gotoCustomizeUrl() {
       let params = this.redPacket.getRpParams(),
@@ -603,7 +602,7 @@ export default {
         "wallet chainId changed: " + chainId + " = " + parseInt(chainId, 16)
       );
       this.chainId = parseInt(chainId, 16);
-      await this.loadRedPacket();
+      // await this.loadRedPacket();
     },
     async connectWallet() {
       console.log("try connect wallet...");
@@ -617,8 +616,8 @@ export default {
             method: "eth_requestAccounts",
           })
         );
-        await this.chainChanged(
-          window.ethereum.request({
+        this.chainChanged(
+          await window.ethereum.request({
             method: "eth_chainId",
           })
         );
@@ -800,23 +799,25 @@ export default {
 
     <div id="vm" class="container">
       <nav
-        class="navbar navbar-expand-lg navbar-light"
-        id="navbarExpand"
+        class="navbar navbar-expand-lg navbar-light nav-bg"
         style="
           position: fixed;
           top: 0;
           left: 0;
           right: 0;
           z-index: 99;
-          background-color: red;
           background-size: cover;
         "
       >
         <div class="container">
-          <a class="navbar-brand text-white" href="/" target="_blank"
-            >Create Red Packet</a
-          >
+          <a class="navbar-brand" href="/" target="_blank">Create Red Packet</a>
           <ul class="mr-2 navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" @click="toSend">
+                <i class="bi bi-list-ul" />
+                Send
+              </a>
+            </li>
             <li class="nav-item" @click="toList">
               <i class="bi bi-list-ul" />
               Explore
@@ -828,7 +829,7 @@ export default {
             style="flex-direction: row !important"
           >
             <li class="nav-item">
-              <span class="nav-link text-white"
+              <span class="nav-link"
                 ><i class="bi bi-globe" />
                 <span v-text="networkName"></span>&nbsp;</span
               >
@@ -843,7 +844,7 @@ export default {
               </button>
             </li>
             <li v-if="account !== null" class="nav-item">
-              <a class="nav-link text-white" href="#0" v-on:click="gotoScanUrl">
+              <a class="nav-link" href="#0" v-on:click="gotoScanUrl">
                 <i class="bi bi-wallet" />
                 <span v-text="abbrAddress(account)"></span
               ></a>
@@ -874,7 +875,7 @@ export default {
           </div>
         </div>
 
-        <div v-show="!invalid && loaded" class="row g-0 mt-4">
+        <div v-show="!invalid" class="row g-0 mt-4">
           <div class="col">
             <div
               v-if="redPacket.preview"
@@ -899,23 +900,23 @@ export default {
                 >
                   <div class="info text-center">
                     <div class="ms-4 me-4">
-                      <div class="mt-5">Red Packet Sent by</div>
-                      <div class="mt-2" v-text="creatorName"></div>
+                      <div class="mt-5">Red Packet</div>
+                      <!-- <div class="mt-2" v-text="creatorName"></div> -->
                       <div class="mt-5 fs-4" v-text="greeting"></div>
-                      <div v-show="displayOpenInfo" class="mt-4 fs-7">
+                      <!-- <div v-show="displayOpenInfo" class="mt-4 fs-7">
                         Opened
                         <span
                           v-text="redPacket.total - redPacket.totalLeft"
                         ></span>
                         /
                         <span v-text="redPacket.total"></span>
-                      </div>
-                      <div v-show="displayOpenInfo" class="mt-2 fs-7">
+                      </div> -->
+                      <!-- <div v-show="displayOpenInfo" class="mt-2 fs-7">
                         <span v-text="token && token.symbol"></span>
                         <span v-text="amountLeft"></span>
                         /
                         <span v-text="amount"></span>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                   <div v-show="opened" class="opened text-center">
@@ -947,7 +948,7 @@ export default {
                 </div>
               </div>
             </div>
-            <div
+            <!-- <div
               v-show="
                 redPacket.condition !==
                 '0x0000000000000000000000000000000000000000'
@@ -957,7 +958,7 @@ export default {
               <span class="text-white"
                 >* This red packet has address validation logic.</span
               >
-            </div>
+            </div> -->
             <div
               v-show="canCustomize && !redPacket.preview"
               class="mt-4 mb-4 text-center text-white"
@@ -970,7 +971,7 @@ export default {
                 >Customize Your Red Packet</a
               >
             </div>
-            <div id="customize" style="display: none">
+            <!-- <div id="customize" style="display: none">
               <div
                 class="card mt-4"
                 style="width: 328px; margin-left: auto; margin-right: auto"
@@ -1043,7 +1044,7 @@ export default {
                   </form>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -1052,7 +1053,7 @@ export default {
 </template>
 
 <style scoped>
-body {
+/* body {
   height: 100vh;
   background-size: cover;
   background-image: linear-gradient(
@@ -1061,11 +1062,10 @@ body {
     #c850c0 20%,
     #ffa770 100%
   );
-}
+} */
 
 .red-packet {
   width: 328px;
-  color: #ebcc9a;
 }
 
 .red-packet .card {
@@ -1078,6 +1078,7 @@ body {
 
 .red-packet .card-body {
   background-size: cover;
+  color: #ebcc9a;
 }
 
 .golden-border {
@@ -1181,7 +1182,7 @@ a {
   text-decoration: none;
 }
 
-#navbarExpand {
+/* #navbarExpand {
   background-image: url("~../../assets/img/nav.png");
-}
+} */
 </style>

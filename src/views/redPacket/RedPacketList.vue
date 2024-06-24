@@ -1,8 +1,8 @@
 <script>
-import {RedPacket} from "@/utils/RedPacket";
-import {getWeb3Provider} from "@/utils/WalletUtil";
-import {chains} from "@/assets/js/chains";
-import {ethers} from "ethers";
+import { RedPacket } from "@/utils/RedPacket";
+import { getWeb3Provider } from "@/utils/WalletUtil";
+import { chains } from "@/assets/js/chains";
+import { ethers } from "ethers";
 import request from "@/utils/request";
 
 export default {
@@ -39,15 +39,15 @@ export default {
     toReceive(params) {
       this.$router.push({
         name: "redPacketReceive",
-        params
+        params,
       });
     },
     async postJson(url, data) {
       request({
-        method: 'post',
+        method: "post",
         url,
-        data
-      })
+        data,
+      });
     },
     async loadRedPackets() {
       if (this.loaded) {
@@ -75,8 +75,8 @@ export default {
 }`,
         };
         let list = await this.postJson(
-            "https://api.thegraph.com/subgraphs/name/michaelliao/redpacket",
-            query,
+          "https://api.thegraph.com/subgraphs/name/michaelliao/redpacket",
+          query
         );
         console.log(list);
         let rps = [];
@@ -162,8 +162,8 @@ export default {
     },
     accountChanged(accounts) {
       console.log(
-          "wallet account changed:",
-          accounts.length === 0 ? null : accounts[0],
+        "wallet account changed:",
+        accounts.length === 0 ? null : accounts[0]
       );
       if (accounts.length === 0) {
         this.disconnected();
@@ -178,7 +178,7 @@ export default {
     },
     async chainChanged(chainId) {
       console.log(
-          "wallet chainId changed: " + chainId + " = " + parseInt(chainId, 16),
+        "wallet chainId changed: " + chainId + " = " + parseInt(chainId, 16)
       );
       this.chainId = parseInt(chainId, 16);
     },
@@ -190,14 +190,14 @@ export default {
       }
       try {
         await this.accountChanged(
-            window.ethereum.request({
-              method: "eth_requestAccounts",
-            }),
+          window.ethereum.request({
+            method: "eth_requestAccounts",
+          })
         );
         await this.chainChanged(
-            window.ethereum.request({
-              method: "eth_chainId",
-            }),
+          window.ethereum.request({
+            method: "eth_chainId",
+          })
         );
         window.ethereum.on("disconnect", this.disconnected);
         window.ethereum.on("accountsChanged", this.accountChanged);
@@ -221,11 +221,11 @@ export default {
   <div>
     <!-- Input Modal -->
     <div
-        id="inputModal"
-        aria-hidden="true"
-        aria-labelledby="inputLabel"
-        class="modal fade"
-        role="dialog"
+      id="inputModal"
+      aria-hidden="true"
+      aria-labelledby="inputLabel"
+      class="modal fade"
+      role="dialog"
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -236,13 +236,13 @@ export default {
             <form onsubmit="return false">
               <div class="mb-3">
                 <label class="form-label" for="inputPassword"
-                >Password for this red packet:</label
+                  >Password for this red packet:</label
                 >
                 <input
-                    id="inputPassword"
-                    class="form-control"
-                    maxlength="100"
-                    type="text"
+                  id="inputPassword"
+                  class="form-control"
+                  maxlength="100"
+                  type="text"
                 />
                 <div class="form-text">
                   Input the password of the red packet set by creator.
@@ -253,10 +253,10 @@ export default {
           <div class="modal-footer">
             <button class="btn btn-primary" type="button">OK</button>
             <button
-                aria-label="Close"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-                type="button"
+              aria-label="Close"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              type="button"
             >
               Cancel
             </button>
@@ -267,11 +267,11 @@ export default {
 
     <!-- Loading Modal -->
     <div
-        id="loadingModal"
-        aria-hidden="true"
-        aria-labelledby="loadingLabel"
-        class="modal fade"
-        role="dialog"
+      id="loadingModal"
+      aria-hidden="true"
+      aria-labelledby="loadingLabel"
+      class="modal fade"
+      role="dialog"
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -297,21 +297,21 @@ export default {
 
     <!-- Alert Modal -->
     <div
-        id="alertModal"
-        aria-hidden="true"
-        aria-labelledby="alertLabel"
-        class="modal fade"
-        role="dialog"
+      id="alertModal"
+      aria-hidden="true"
+      aria-labelledby="alertLabel"
+      class="modal fade"
+      role="dialog"
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header align-items-center d-flex">
             <h4 id="alertLabel" class="modal-title x-title">&nbsp;</h4>
             <button
-                aria-label="Close"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                type="button"
+              aria-label="Close"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              type="button"
             >
               <span aria-hidden="true"><i class="fe fe-x-circle"></i></span>
             </button>
@@ -326,9 +326,9 @@ export default {
           </div>
           <div class="modal-footer">
             <button
-                aria-label="Close"
-                class="btn btn-outline-primary"
-                data-bs-dismiss="modal"
+              aria-label="Close"
+              class="btn btn-outline-primary"
+              data-bs-dismiss="modal"
             >
               OK
             </button>
@@ -339,21 +339,21 @@ export default {
 
     <!-- Info Modal -->
     <div
-        id="infoModal"
-        aria-hidden="true"
-        aria-labelledby="infoLabel"
-        class="modal fade"
-        role="dialog"
+      id="infoModal"
+      aria-hidden="true"
+      aria-labelledby="infoLabel"
+      class="modal fade"
+      role="dialog"
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header align-items-center d-flex">
             <h4 id="infoLabel" class="modal-title x-title">&nbsp;</h4>
             <button
-                aria-label="Close"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                type="button"
+              aria-label="Close"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              type="button"
             >
               <span aria-hidden="true"><i class="fe fe-x-circle"></i></span>
             </button>
@@ -368,9 +368,9 @@ export default {
           </div>
           <div class="modal-footer">
             <button
-                aria-label="Close"
-                class="btn btn-outline-primary"
-                data-bs-dismiss="modal"
+              aria-label="Close"
+              class="btn btn-outline-primary"
+              data-bs-dismiss="modal"
             >
               OK
             </button>
@@ -381,9 +381,9 @@ export default {
 
     <div id="vm" class="container" style="display: none">
       <nav
-          class="navbar navbar-expand-lg navbar-light"
-          id="navbarExpand"
-          style="
+        class="navbar navbar-expand-lg navbar-light"
+        id="navbarExpand"
+        style="
           position: fixed;
           top: 0;
           left: 0;
@@ -394,42 +394,41 @@ export default {
       >
         <div class="container">
           <a class="navbar-brand text-white" href="/" target="_blank"
-          >Create Red Packet</a
+            >Create Red Packet</a
           >
           <ul class="mr-2 navbar-nav">
             <li class="nav-item">
               <span class="nav-link active text-white">
-                <i class="bi bi-list-ul"/>
+                <i class="bi bi-list-ul" />
                 Explore
               </span>
             </li>
           </ul>
           <ul
-              id="wallet"
-              class="mr-2 navbar-nav navbar-right-wrap"
-              style="flex-direction: row !important"
+            id="wallet"
+            class="mr-2 navbar-nav navbar-right-wrap"
+            style="flex-direction: row !important"
           >
             <li class="nav-item">
               <span class="nav-link text-white"
-              ><i class="bi bi-globe"/>
+                ><i class="bi bi-globe" />
                 <span v-text="networkName"></span>&nbsp;</span
               >
             </li>
             <li v-if="account === null" class="nav-item">
               <button
-                  class="btn btn-light"
-                  type="button"
-                  v-on:click="connectWallet"
+                class="btn btn-light"
+                type="button"
+                v-on:click="connectWallet"
               >
                 Connect Wallet
               </button>
             </li>
             <li v-if="account !== null" class="nav-item">
-              <a class="nav-link text-white" href="#0" v-on:click="gotoScanUrl"
-              >
-                <i class="bi bi-wallet"/>
+              <a class="nav-link text-white" href="#0" v-on:click="gotoScanUrl">
+                <i class="bi bi-wallet" />
                 <span v-text="abbrAddress(account)"></span
-                ></a>
+              ></a>
             </li>
           </ul>
         </div>
@@ -450,50 +449,52 @@ export default {
           <div v-show="loaded" class="col-12 mb-4">
             <table class="table text-white">
               <thead>
-              <tr>
-                <th scope="col"># ID</th>
-                <th scope="col">Type</th>
-                <th scope="col">Token</th>
-                <th scope="col">Participates</th>
-                <th scope="col">Creator</th>
-                <th scope="col">Action</th>
-              </tr>
+                <tr>
+                  <th scope="col"># ID</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Token</th>
+                  <th scope="col">Participates</th>
+                  <th scope="col">Creator</th>
+                  <th scope="col">Action</th>
+                </tr>
               </thead>
               <tbody>
-              <tr v-for="rp in redPackets">
-                <td v-text="rp.id"></td>
-                <td v-text="rp.bonusType == 0 ? 'Identical' : 'Random'"></td>
-                <td>
-                  <a
+                <tr v-for="rp in redPackets">
+                  <td v-text="rp.id"></td>
+                  <td v-text="rp.bonusType == 0 ? 'Identical' : 'Random'"></td>
+                  <td>
+                    <a
                       class="text-white"
                       target="_blank"
                       v-bind:href="tokenUrl(rp.token)"
-                  ><span v-text="tokenSymbol(rp.token)"></span>
-                    <i class="bi bi-box-arrow-up-right"></i
+                      ><span v-text="tokenSymbol(rp.token)"></span>
+                      <i class="bi bi-box-arrow-up-right"></i
                     ></a>
-                </td>
-                <td v-text="rp.total"></td>
-                <td>
-                  <a
+                  </td>
+                  <td v-text="rp.total"></td>
+                  <td>
+                    <a
                       class="text-white"
                       target="_blank"
                       v-bind:href="scanUrl(rp.creator)"
-                  ><span v-text="abbrAddress(rp.creator)"></span>
-                    <i class="bi bi-box-arrow-up-right"></i
+                      ><span v-text="abbrAddress(rp.creator)"></span>
+                      <i class="bi bi-box-arrow-up-right"></i
                     ></a>
-                </td>
-                <td @click="toReceive({
-                  chain: rp.chain,
-                  id: rp.id
-                })">
-                  <a
-                      class="text-white"
+                  </td>
+                  <td
+                    @click="
+                      toReceive({
+                        chain: rp.chain,
+                        id: rp.id,
+                      })
+                    "
                   >
-                    🧧 Try Open!
-                    <i class="bi bi-box-arrow-up-right"/>
-                  </a>
-                </td>
-              </tr>
+                    <a class="text-white">
+                      🧧 Try Open!
+                      <i class="bi bi-box-arrow-up-right" />
+                    </a>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -511,7 +512,7 @@ export default {
 </template>
 
 <style scoped>
-body {
+/* body {
   height: 100vh;
   background-size: cover;
   background-image: linear-gradient(
@@ -520,7 +521,7 @@ body {
       #c850c0 20%,
       #ffa770 100%
   );
-}
+} */
 
 .fs-7 {
   font-size: 0.875rem;
