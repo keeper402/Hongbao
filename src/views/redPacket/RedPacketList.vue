@@ -382,13 +382,13 @@ export default {
     <div id="vm" class="container" style="display: none">
       <nav
           class="navbar navbar-expand-lg navbar-light"
+          id="navbarExpand"
           style="
           position: fixed;
           top: 0;
           left: 0;
           right: 0;
           z-index: 99;
-          background-image: url(~../../assets/img/nav.png);
           background-size: cover;
         "
       >
@@ -528,5 +528,9 @@ body {
 
 a {
   text-decoration: none;
+}
+
+#navbarExpand {
+  background-image: url("~../../assets/img/nav.png");
 }
 </style>
