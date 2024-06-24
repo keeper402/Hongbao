@@ -6,6 +6,58 @@ const {groth16} = require("snarkjs");
 
 describe("Hongbao", function () {
     this.timeout(5000);
+    //mantle-test verifier address : 0xd80c02cDd2826747D2Cf69938C3D5Eea7eECc796
+
+    it("generate proof", async function () {
+        const rawKey = "123";
+        const address = '0x617F2E2fD72FD9D5503197092aC168c91465E7f2'
+        const keccakKey = ethers.keccak256(ethers.toUtf8Bytes(rawKey));
+        const keccakKeyBigInt = ethers.getBigInt(keccakKey);
+        const addressBigInt = ethers.getBigInt(address);
+        const sub = keccakKeyBigInt - addressBigInt;
+        const [proof, outHash] = await prove(addressBigInt, sub);
+        const resProof = [proof.pi_a[0], proof.pi_a[1], proof.pi_b[0][1], proof.pi_b[0][0], proof.pi_b[1][1], proof.pi_b[1][0], proof.pi_c[0], proof.pi_c[1]];
+        let s = '[';
+        for (let i = 0; i < resProof.length; i++) {
+            s += resProof[i];
+            if (i < resProof.length -1 ){
+                s += ','
+            }
+        }
+        s +=']';
+        console.log("keyHash:");
+        console.log(outHash+"");
+        console.log("proof:");
+        console.log(s);
+    });
+
+    it("generate proof for verifier", async function () {
+        const rawKey = "123";
+        const address = '0x199c8694ed968768bEf156F3e90B33Fe2be678e9'
+        const keccakKey = ethers.keccak256(ethers.toUtf8Bytes(rawKey));
+        const keccakKeyBigInt = ethers.getBigInt(keccakKey);
+        const addressBigInt = ethers.getBigInt(address);
+        const sub = keccakKeyBigInt - addressBigInt;
+        const [proof, outHash] = await prove(addressBigInt, sub);
+        const resProof = [proof.pi_a[0], proof.pi_a[1], proof.pi_b[0][1], proof.pi_b[0][0], proof.pi_b[1][1], proof.pi_b[1][0], proof.pi_c[0], proof.pi_c[1]];
+        let s = '[';
+        for (let i = 0; i < resProof.length; i++) {
+            s += resProof[i];
+            if (i < resProof.length -1 ){
+                s += ','
+            }
+        }
+        s +=']';
+        console.log("pubSigns:");
+        console.log([outHash+'', addressBigInt+'']);
+        console.log("proofa:");
+        console.log(proof.pi_a.slice(0,2));
+        console.log("proofb:");
+        console.log(proof.pi_b.slice(0,2));
+        console.log("proofc:");
+        console.log(proof.pi_c.slice(0,2));
+    });
+
     it("Should create and claim a hongbao", async function () {
         //部署合约/准备用户
         const provider = ethers.provider;
