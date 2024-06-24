@@ -42,7 +42,7 @@ contract Hongbao {
     uint256 private nextId = 0;
     mapping(uint256 => HongbaoInfo) public idMap;
 
-    mapping(bytes => bool) internal claimedMap; // 记录已经领取的红包的地址
+    mapping(bytes32 => bool) internal claimedMap; // 记录已经领取的红包的地址
 
     //id -> 红包 (用于查询）
     mapping(uint256 => HongbaoInfo) internal hongbaoMap;
@@ -131,7 +131,7 @@ contract Hongbao {
     function claimHongbao(uint256 passwordHash, uint256[] memory proof) public returns (bool){
         HongbaoInfo storage hongbao = hongbaoMap[passwordHash];
         require(hongbao.remaining > 0, "hongbao fully claimed");
-        bytes memory claimKey = abi.encodePacked(passwordHash, hongbao.timestamp, msg.sender);
+        bytes32 claimKey = keccak256(abi.encodePacked(passwordHash, hongbao.timestamp, msg.sender));
         require(!claimedMap[claimKey], "you already claimed hongbao");
 
         //零知识证明 验证领取者知道口令
