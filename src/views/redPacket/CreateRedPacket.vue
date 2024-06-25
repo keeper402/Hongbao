@@ -571,12 +571,12 @@ export default {
             ><i class="bi bi-envelope-paper" /> Red Packet</a
           >
           <ul class="mr-2 navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" @click="toList">
-                <i class="bi bi-list-ul" />
-                Explore
-              </a>
-            </li>
+<!--            <li class="nav-item">-->
+<!--              <a class="nav-link" @click="toList">-->
+<!--                <i class="bi bi-list-ul" />-->
+<!--                Explore-->
+<!--              </a>-->
+<!--            </li>-->
             <li class="nav-item">
               <a class="nav-link" @click="toReceive">
                 <i class="bi bi-list-ul" />

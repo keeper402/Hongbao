@@ -810,17 +810,25 @@ export default {
         "
       >
         <div class="container">
-          <a class="navbar-brand" href="/" target="_blank">Create Red Packet</a>
+          <a class="navbar-brand" href="/"
+          ><i class="bi bi-envelope-paper" /> Red Packet</a
+          >
           <ul class="mr-2 navbar-nav">
+<!--            <li class="nav-item" @click="toList">-->
+<!--              <i class="bi bi-list-ul" />-->
+<!--              Explore-->
+<!--            </li>-->
             <li class="nav-item">
-              <a class="nav-link" @click="toSend">
-                <i class="bi bi-list-ul" />
-                Send
+<!--              <a class="nav-link" @click="toSend">-->
+              <a class="nav-link" href="/">
+<!--                <i class="bi bi-list-ul" />-->
+                Send &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               </a>
-            </li>
-            <li class="nav-item" @click="toList">
-              <i class="bi bi-list-ul" />
-              Explore
+              <li class="nav-item">
+                <a class="nav-link" @click="toReceive">
+<!--                  <i class="bi bi-list-ul" />-->
+                  Receive
+                </a>
             </li>
           </ul>
           <ul

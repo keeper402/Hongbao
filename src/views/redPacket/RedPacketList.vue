@@ -393,9 +393,9 @@ export default {
         "
       >
         <div class="container">
-          <a class="navbar-brand text-white" href="/" target="_blank"
-            >Create Red Packet</a
-          >
+          <a class="navbar-brand" href="/" target="_blank">
+            <i class="bi bi-envelope-paper" /> Red Packet
+          </a>
           <ul class="mr-2 navbar-nav">
             <li class="nav-item">
               <span class="nav-link active text-white">
