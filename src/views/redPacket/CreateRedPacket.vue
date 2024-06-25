@@ -578,8 +578,9 @@ export default {
 <!--              </a>-->
 <!--            </li>-->
             <li class="nav-item">
-              <a class="nav-link" @click="toReceive">
-                <i class="bi bi-list-ul" />
+<!--              <a class="nav-link" @click="toReceive">-->
+              <a class="nav-link" href="/receive">
+<!--                <i class="bi bi-list-ul" />-->
                 Receive
               </a>
             </li>
