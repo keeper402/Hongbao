@@ -32,7 +32,9 @@ export default {
       // }
       // return "Not connected";
       if (this.account) {
-        return "Chain (0x" + this.chainId.toString(16) + ")";
+        const chainName =
+          Consts.SUPPORTED_CHAINS_NAMES[this.chainId] ?? "Chain";
+        return chainName + " (0x" + this.chainId.toString(16) + ")";
       }
       return "Not connected";
     },
