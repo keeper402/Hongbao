@@ -8,6 +8,11 @@
 
 // Then add additional custom code here
 
-.nav-bg {
+.nav-dark-style {
     background-color: $cyan-400;
+    color: black
+}
+
+[data-bs-theme=dark] {
+    --bs-emphasis-color-rgb: 0, 0, 0;
 }

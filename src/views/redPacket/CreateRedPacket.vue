@@ -45,12 +45,6 @@ export default {
     this.init();
   },
   methods: {
-    toList() {
-      this.$router.push("/list");
-    },
-    toReceive() {
-      this.$router.push("/receive");
-    },
     init() {},
     keccak(str) {
       let arr = new TextEncoder().encode(str);
@@ -447,7 +441,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-bs-theme="dark">
     <!-- Loading Modal -->
     <div
       id="loadingModal"
@@ -563,7 +557,7 @@ export default {
 
     <div id="vm" class="container">
       <nav
-        class="navbar navbar-expand-lg navbar-light border-bottom nav-bg"
+        class="navbar navbar-expand-lg nav-dark-style"
         style="position: fixed; top: 0; left: 0; right: 0; z-index: 99"
       >
         <div class="container">
@@ -571,16 +565,9 @@ export default {
             ><i class="bi bi-envelope-paper" /> Red Packet</a
           >
           <ul class="mr-2 navbar-nav">
-<!--            <li class="nav-item">-->
-<!--              <a class="nav-link" @click="toList">-->
-<!--                <i class="bi bi-list-ul" />-->
-<!--                Explore-->
-<!--              </a>-->
-<!--            </li>-->
             <li class="nav-item">
-<!--              <a class="nav-link" @click="toReceive">-->
               <a class="nav-link" href="/receive">
-<!--                <i class="bi bi-list-ul" />-->
+                <i class="bi bi-list-ul" />
                 Receive
               </a>
             </li>

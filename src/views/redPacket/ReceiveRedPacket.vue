@@ -191,12 +191,6 @@ export default {
     //   $("#customize").show();
     // }
     // },
-    toSend() {
-      this.$router.push("/");
-    },
-    toList() {
-      this.$router.push("/list");
-    },
     async prove(addrBN, secretBN) {
       return await groth16.fullProve(
         {
@@ -636,7 +630,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-bs-theme="dark">
     <!-- Input Modal -->
     <div
       id="inputModal"
@@ -799,7 +793,7 @@ export default {
 
     <div id="vm" class="container">
       <nav
-        class="navbar navbar-expand-lg navbar-light nav-bg"
+        class="navbar navbar-expand-lg nav-dark-style"
         style="
           position: fixed;
           top: 0;
@@ -811,24 +805,14 @@ export default {
       >
         <div class="container">
           <a class="navbar-brand" href="/"
-          ><i class="bi bi-envelope-paper" /> Red Packet</a
+            ><i class="bi bi-envelope-paper" /> Red Packet</a
           >
           <ul class="mr-2 navbar-nav">
-<!--            <li class="nav-item" @click="toList">-->
-<!--              <i class="bi bi-list-ul" />-->
-<!--              Explore-->
-<!--            </li>-->
             <li class="nav-item">
-<!--              <a class="nav-link" @click="toSend">-->
               <a class="nav-link" href="/">
-<!--                <i class="bi bi-list-ul" />-->
-                Send &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <i class="bi bi-list-ul" />
+                Send
               </a>
-              <li class="nav-item">
-                <a class="nav-link" @click="toReceive">
-<!--                  <i class="bi bi-list-ul" />-->
-                  Receive
-                </a>
             </li>
           </ul>
           <ul
