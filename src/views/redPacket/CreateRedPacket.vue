@@ -3,6 +3,8 @@ import { chains } from "@/assets/js/chains";
 import { ethers } from "ethers";
 import { getWeb3Provider } from "@/utils/WalletUtil";
 import { groth16 } from "snarkjs";
+import $ from "jquery";
+import { Modal as BootstrapModal } from "bootstrap";
 import Consts from "@/utils/Consts";
 
 export default {
@@ -86,36 +88,35 @@ export default {
       }
     },
     showAlert(title, message) {
-      // let m = $("#alertModal");
-      // m.find(".x-title").text(title);
-      // m.find(".x-message").text(message);
-      // let myModal = new bootstrap.Modal(m.get(0), {
-      //   backdrop: "static",
-      //   keyboard: false,
-      // });
-      // myModal.show();
-      alert(title + " _ " + message);
+      let m = $("#alertModal");
+      m.find(".x-title").text(title);
+      m.find(".x-message").text(message);
+      let myModal = new BootstrapModal(m.get(0), {
+        backdrop: "static",
+        keyboard: false,
+      });
+      myModal.show();
     },
 
     showInfo(title, message) {
-      /*let m = $("#infoModal");
+      let m = $("#infoModal");
       m.find(".x-title").text(title);
       if (message.startsWith("<")) {
         m.find(".x-message").html(message);
       } else {
         m.find(".x-message").text(message);
       }
-      let myModal = new bootstrap.Modal(m.get(0), {
+      let myModal = new BootstrapModal(m.get(0), {
         backdrop: "static",
         keyboard: false,
       });
-      myModal.show();*/
-      alert(title + " _ " + message);
+      myModal.show();
+      // alert(title + " _ " + message);
     },
 
     showLoading(title, message) {
-      /*let m = $("#loadingModal");
-      let myModal = new bootstrap.Modal(m.get(0), {
+      let m = $("#loadingModal");
+      let myModal = new BootstrapModal(m.get(0), {
         backdrop: "static",
         keyboard: false,
       });
@@ -135,7 +136,8 @@ export default {
       obj.setTitle(title);
       obj.setMessage(message);
       myModal.show();
-      return obj;*/
+      return obj;
+      /*
       alert(title + " _ " + message);
       let obj = {
         setTitle: (t) => {
@@ -151,6 +153,7 @@ export default {
         },
       };
       return obj;
+      */
     },
 
     translateError(err) {
@@ -309,14 +312,7 @@ export default {
         }
         loading.close();
         // 显示结果，跳转到列表页
-        let url =
-          location.protocol +
-          "//" +
-          location.host +
-          "/rp.html?chain=" +
-          chainId +
-          "&id=" +
-          redPacketId;
+        let url = location.protocol + "//" + location.host + "/recieve";
         this.showInfo(
           "Success",
           "<p>Red packet created successfully!</p><p>Password: " +
@@ -476,6 +472,7 @@ export default {
     <!-- Alert Modal -->
     <div
       id="alertModal"
+      ref="alertModal"
       aria-hidden="true"
       aria-labelledby="alertLabel"
       class="modal fade"
@@ -495,12 +492,7 @@ export default {
             </button>
           </div>
           <div class="modal-body">
-            <div class="float-start">
-              <i class="fs-2 text-danger fe fe-alert-triangle"></i>
-            </div>
-            <div class="ms-5 ps-4 float-none">
-              <p class="x-message">&nbsp;</p>
-            </div>
+            <p class="x-message">&nbsp;</p>
           </div>
           <div class="modal-footer">
             <button

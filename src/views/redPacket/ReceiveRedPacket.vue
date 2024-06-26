@@ -4,6 +4,8 @@ import { chains } from "@/assets/js/chains";
 import { RedPacket } from "@/utils/RedPacket";
 import { ethers, JsonRpcProvider } from "ethers";
 import { groth16 } from "snarkjs";
+import $ from "jquery";
+import { Modal as BootstrapModal } from "bootstrap";
 import Consts from "@/utils/Consts";
 
 export default {
@@ -215,76 +217,76 @@ export default {
       });
     },
     showAlert(title, message) {
-      // let m = $("#alertModal");
-      // m.find(".x-title").text(title);
-      // m.find(".x-message").text(message);
-      // let myModal = new bootstrap.Modal(m.get(0), {
-      //   backdrop: "static",
-      //   keyboard: false,
-      // });
-      // myModal.show();
-      alert(title + " _ " + message);
+      let m = $("#alertModal");
+      m.find(".x-title").text(title);
+      m.find(".x-message").text(message);
+      let myModal = new BootstrapModal(m.get(0), {
+        backdrop: "static",
+        keyboard: false,
+      });
+      myModal.show();
+      // alert(title + " _ " + message);
     },
 
     showInfo(title, message) {
-      // let m = $("#infoModal");
-      // m.find(".x-title").text(title);
-      // if (message.startsWith("<")) {
-      //   m.find(".x-message").html(message);
-      // } else {
-      //   m.find(".x-message").text(message);
-      // }
-      // let myModal = new bootstrap.Modal(m.get(0), {
-      //   backdrop: "static",
-      //   keyboard: false,
-      // });
-      // myModal.show();
-      alert(title + " _ " + message);
+      let m = $("#infoModal");
+      m.find(".x-title").text(title);
+      if (message.startsWith("<")) {
+        m.find(".x-message").html(message);
+      } else {
+        m.find(".x-message").text(message);
+      }
+      let myModal = new BootstrapModal(m.get(0), {
+        backdrop: "static",
+        keyboard: false,
+      });
+      myModal.show();
+      // alert(title + " _ " + message);
     },
 
     showInput(onOkClicked) {
-      // let m = $("#inputModal"),
-      //   ok = m.find("button.btn-primary");
-      // $("#inputPassword").val("");
-      // let myModal = new bootstrap.Modal(m.get(0), {
-      //   backdrop: "static",
-      //   keyboard: false,
-      // });
-      // ok.click(() => {
-      //   myModal.hide();
-      //   ok.off("click");
-      //   setTimeout(() => {
-      //     onOkClicked && onOkClicked($("#inputPassword").val());
-      //   }, 500);
-      // });
-      // myModal.show();
-      let pwd = prompt("Input Password");
-      onOkClicked && onOkClicked(pwd);
+      let m = $("#inputModal"),
+        ok = m.find("button.btn-primary");
+      $("#inputPassword").val("");
+      let myModal = new BootstrapModal(m.get(0), {
+        backdrop: "static",
+        keyboard: false,
+      });
+      ok.click(() => {
+        myModal.hide();
+        ok.off("click");
+        setTimeout(() => {
+          onOkClicked && onOkClicked($("#inputPassword").val());
+        }, 500);
+      });
+      myModal.show();
+      // let pwd = prompt("Input Password");
+      // onOkClicked && onOkClicked(pwd);
     },
 
     showLoading(title, message) {
-      // let m = $("#loadingModal");
-      // let myModal = new bootstrap.Modal(m.get(0), {
-      //   backdrop: "static",
-      //   keyboard: false,
-      // });
+      let m = $("#loadingModal");
+      let myModal = new BootstrapModal(m.get(0), {
+        backdrop: "static",
+        keyboard: false,
+      });
       alert(title + " _ " + message);
       let obj = {
         setTitle: (t) => {
-          // m.find(".x-title").text(t);
+          m.find(".x-title").text(t);
         },
         setMessage: (t) => {
-          // m.find(".x-message").text(t);
+          m.find(".x-message").text(t);
         },
         close: () => {
           setTimeout(() => {
-            // myModal.hide();
+            myModal.hide();
           }, 500);
         },
       };
-      // obj.setTitle(title);
-      // obj.setMessage(message);
-      // myModal.show();
+      obj.setTitle(title);
+      obj.setMessage(message);
+      myModal.show();
       return obj;
     },
 

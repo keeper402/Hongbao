@@ -10,11 +10,15 @@
 
 .nav-dark-style {
     background-color: $cyan-400;
-    color: black
+    color: black;
 }
 
 [data-bs-theme=dark] {
     --bs-emphasis-color-rgb: 0, 0, 0;
+    --bs-heading-color: rgb(222, 226, 230);
+    .modal-content {
+        color: rgb(222, 226, 230);
+    }
 }
 
 #app {
