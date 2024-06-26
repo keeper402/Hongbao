@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 contract Faucet {
     using SafeERC20 for IERC20;
 
-    uint256 public amountAllowed = 10000; // 每次领 10000单位代币
+    uint256 public amountAllowed = 10 ether; // 每次领 10 eth单位代币
     address public tokenContract;   // token合约地址
     // 间隔时间
     uint256 public constant intervals = 120 minutes;

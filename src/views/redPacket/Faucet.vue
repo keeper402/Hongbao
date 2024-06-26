@@ -137,6 +137,24 @@ export default {
     this.init();
   },
   methods: {
+
+    async claimFaucet() {
+      // <!-- 领水逻辑   -->
+      try {
+        const signer = await getWeb3Provider().getSigner();
+        const faucet = new ethers.Contract(
+            Consts.faucetAddress,
+            Consts.faucetABI,
+            signer
+        );
+        let tx = await faucet.requestTokens();
+        this.showAlert("Success", "you have claimed 10 hong!");
+      }catch (err) {
+        return this.showAlert("Error", this.translateError(err));
+      }
+    },
+
+
     async init() {
       await this.connectWallet();
       // await this.loadRedPacket();
@@ -879,7 +897,7 @@ export default {
               <p readonly style="color: #FFFFFF;">
                 This faucet is used to receive test tokens. You can receive 100eth tokens here every day. Then fill in this token address ${HONGBAOCOIN_ADDR} when sending out Hongbao, and you can try it out and send out red envelopes.
               </p>
-              <div class="modal-footer">
+              <div class="modal-footer" v-on:click="claimFaucet">
                 <button class="btn btn-primary" type="button">Claim</button>
               </div>
             </div>

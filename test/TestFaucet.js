@@ -14,7 +14,7 @@ describe("Faucet", function () {
         const [user] = await ethers.getSigners();
         // deploy token
         const HongbaoCoin = await ethers.getContractFactory("TetherToken");
-        const hongbaoCoin = await HongbaoCoin.deploy(1000000000000000, 'Hongbao Coin', 'Hong', 6);
+        const hongbaoCoin = await HongbaoCoin.deploy(1000000 * 1000000000000000000 , 'Hongbao Coin', 'Hong', 6);
         const HongbaoCoinAddress = await hongbaoCoin.getAddress();
         // deploy faucet
         const Faucet = await ethers.getContractFactory("Faucet");
