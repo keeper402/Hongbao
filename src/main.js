@@ -20,7 +20,7 @@ Vue.config.productionTip = false;
 // Vue.use(Element, {
 //     size: Cookies.get('size') || 'medium' // set element-ui default size
 // })
-
+console.log(process.env.VUE_APP_redPacketAddress)
 new Vue({
     router,
     render: (h) => h(App),

@@ -8,6 +8,9 @@ import $ from "jquery";
 import { Modal as BootstrapModal } from "bootstrap";
 import Consts from "@/utils/Consts";
 
+// 先改文本
+const text = `This faucet is used to receive test tokens. You can receive 100eth tokens here every day. Then fill in this token address [${Consts.faucetAddress}] when sending out Hongbao, and you can try it out and send out red envelopes.`
+// var p = document.getElementById("showText");
 export default {
   data() {
     return {

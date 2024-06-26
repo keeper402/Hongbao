@@ -8,9 +8,10 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
+    "dotenv": "^14.3.2",
     "@openzeppelin/contracts": "^4.9.6",
     "axios": "0.24.0",
+    "@popperjs/core": "^2.0.0",
     "bootstrap": "^5.3.0",
     "bootstrap-vue": "^2.23.0",
     "core-js": "^3.8.3",
