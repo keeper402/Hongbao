@@ -16,3 +16,15 @@
 [data-bs-theme=dark] {
     --bs-emphasis-color-rgb: 0, 0, 0;
 }
+
+#app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin-top: 60px;
+}
+
+body {
+    background-color: #1C1C1C !important;
+    background: url('@/assets/img/bg.png') no-repeat fixed bottom; 
+}
