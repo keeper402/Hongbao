@@ -573,6 +573,12 @@ export default {
                 Receive
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/faucet">
+                <i class="bi bi-list-ul" />
+                Faucet
+              </a>
+            </li>
           </ul>
           <ul
             id="wallet"
