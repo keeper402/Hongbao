@@ -1,3 +1,6 @@
+const name = process.env.VUE_APP_REDPACKET_ADDRESS;
+console.log('----------------------');
+console.log(name);
 export default {
     redPacketAddress: process.env.VUE_APP_REDPACKET_ADDRESS,
     redPacketABI:

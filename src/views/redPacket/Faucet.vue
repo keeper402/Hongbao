@@ -9,7 +9,10 @@ import { Modal as BootstrapModal } from "bootstrap";
 import Consts from "@/utils/Consts";
 
 // 先改文本
-const text = `This faucet is used to receive test tokens. You can receive 100eth tokens here every day. Then fill in this token address [${Consts.faucetAddress}] when sending out Hongbao, and you can try it out and send out red envelopes.`
+const text = `This faucet is used to receive test tokens. You can receive 100eth tokens here every day. Then fill in this token address [${process.env.VUE_APP_COIN_ADDRESS}] when sending out Hongbao, and you can try it out and send out red envelopes.`
+$(document).ready(function (){
+  document.getElementById("intro").innerText=text;
+})
 // var p = document.getElementById("showText");
 export default {
   data() {
@@ -659,10 +662,10 @@ export default {
               <img src="../../assets/img/faucet.jpg" />
               <div>
                 <div>
-                  <p readonly class="text-white">
+                  <p id="intro" readonly class="text-white">
                     This faucet is used to receive test tokens. You can receive
                     100eth tokens here every day. Then fill in this token
-                    address ${HONGBAOCOIN_ADDR} when sending out Hongbao, and
+                    address ${process.env.VUE_APP_COIN_ADDRESS} when sending out Hongbao, and
                     you can try it out and send out red envelopes.
                   </p>
                 </div>
