@@ -1,4 +1,4 @@
-// tests/luckyRedPacket.test.js
+// tests/Hongbao.test.js
 const {expect, assert} = require("chai");
 const {ethers} = require("hardhat");
 const {groth16} = require("snarkjs");
