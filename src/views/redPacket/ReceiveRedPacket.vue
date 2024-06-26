@@ -241,7 +241,7 @@ export default {
         backdrop: "static",
         keyboard: false,
       });
-      alert(title + " _ " + message);
+      // alert(title + " _ " + message);
       let obj = {
         setTitle: (t) => {
           m.find(".x-title").text(t);

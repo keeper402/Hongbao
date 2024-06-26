@@ -4,6 +4,8 @@ import { chains } from "@/assets/js/chains";
 import { RedPacket } from "@/utils/RedPacket";
 import { ethers, JsonRpcProvider } from "ethers";
 import { groth16 } from "snarkjs";
+import $ from "jquery";
+import { Modal as BootstrapModal } from "bootstrap";
 import Consts from "@/utils/Consts";
 
 export default {
@@ -203,76 +205,76 @@ export default {
       });
     },
     showAlert(title, message) {
-      // let m = $("#alertModal");
-      // m.find(".x-title").text(title);
-      // m.find(".x-message").text(message);
-      // let myModal = new bootstrap.Modal(m.get(0), {
-      //   backdrop: "static",
-      //   keyboard: false,
-      // });
-      // myModal.show();
-      alert(title + " _ " + message);
+      let m = $("#alertModal");
+      m.find(".x-title").text(title);
+      m.find(".x-message").text(message);
+      let myModal = new BootstrapModal(m.get(0), {
+        backdrop: "static",
+        keyboard: false,
+      });
+      myModal.show();
+      // alert(title + " _ " + message);
     },
 
     showInfo(title, message) {
-      // let m = $("#infoModal");
-      // m.find(".x-title").text(title);
-      // if (message.startsWith("<")) {
-      //   m.find(".x-message").html(message);
-      // } else {
-      //   m.find(".x-message").text(message);
-      // }
-      // let myModal = new bootstrap.Modal(m.get(0), {
-      //   backdrop: "static",
-      //   keyboard: false,
-      // });
-      // myModal.show();
-      alert(title + " _ " + message);
+      let m = $("#infoModal");
+      m.find(".x-title").text(title);
+      if (message.startsWith("<")) {
+        m.find(".x-message").html(message);
+      } else {
+        m.find(".x-message").text(message);
+      }
+      let myModal = new BootstrapModal(m.get(0), {
+        backdrop: "static",
+        keyboard: false,
+      });
+      myModal.show();
+      // alert(title + " _ " + message);
     },
 
     showInput(onOkClicked) {
-      // let m = $("#inputModal"),
-      //   ok = m.find("button.btn-primary");
-      // $("#inputPassword").val("");
-      // let myModal = new bootstrap.Modal(m.get(0), {
-      //   backdrop: "static",
-      //   keyboard: false,
-      // });
-      // ok.click(() => {
-      //   myModal.hide();
-      //   ok.off("click");
-      //   setTimeout(() => {
-      //     onOkClicked && onOkClicked($("#inputPassword").val());
-      //   }, 500);
-      // });
-      // myModal.show();
-      let pwd = prompt("Input Password");
-      onOkClicked && onOkClicked(pwd);
+      let m = $("#inputModal"),
+        ok = m.find("button.btn-primary");
+      $("#inputPassword").val("");
+      let myModal = new BootstrapModal(m.get(0), {
+        backdrop: "static",
+        keyboard: false,
+      });
+      ok.click(() => {
+        myModal.hide();
+        ok.off("click");
+        setTimeout(() => {
+          onOkClicked && onOkClicked($("#inputPassword").val());
+        }, 500);
+      });
+      myModal.show();
+      // let pwd = prompt("Input Password");
+      // onOkClicked && onOkClicked(pwd);
     },
 
     showLoading(title, message) {
-      // let m = $("#loadingModal");
-      // let myModal = new bootstrap.Modal(m.get(0), {
-      //   backdrop: "static",
-      //   keyboard: false,
-      // });
-      alert(title + " _ " + message);
+      let m = $("#loadingModal");
+      let myModal = new BootstrapModal(m.get(0), {
+        backdrop: "static",
+        keyboard: false,
+      });
+      // alert(title + " _ " + message);
       let obj = {
         setTitle: (t) => {
-          // m.find(".x-title").text(t);
+          m.find(".x-title").text(t);
         },
         setMessage: (t) => {
-          // m.find(".x-message").text(t);
+          m.find(".x-message").text(t);
         },
         close: () => {
           setTimeout(() => {
-            // myModal.hide();
+            myModal.hide();
           }, 500);
         },
       };
-      // obj.setTitle(title);
-      // obj.setMessage(message);
-      // myModal.show();
+      obj.setTitle(title);
+      obj.setMessage(message);
+      myModal.show();
       return obj;
     },
 
@@ -338,158 +340,6 @@ export default {
         this.showInfo("Red Packet Customized URL", h);
       } catch (err) {
         this.showAlert("Error", this.translateError(err));
-      }
-    },
-    openRedPacket() {
-      if (this.redPacket.preview) {
-        this.bonusBN = ethers.parseUnits("1", this.token.decimals);
-        this.toAddress = this.redPacket.abbrAddress(
-          "0xa1b200000000000000000000000000000000e8f9"
-        );
-        this.opened = true;
-        return;
-      }
-      if (this.redPacket.totalLeft === 0) {
-        return this.showAlert(
-          "Error",
-          "Red packet is empty. Hurry up next time!"
-        );
-      }
-      let that = this;
-      this.showInput(function (password) {
-        if (password.trim() !== "") {
-          that
-            .tryOpenRedPacket(password.trim())
-            .then(console.log("tryOpenRedPacket: ok"))
-            .catch((e) => console.error(e));
-        }
-      });
-    },
-    async tryOpenRedPacket(password) {
-      if (!this.ready) {
-        return this.showAlert(
-          "Error",
-          "Please connect MetaMask to " + this.correctNetworkName + " first!"
-        );
-      }
-      // let payload = this.redPacket.creator.toLowerCase() + password,
-      let payload = password,
-        passcode = BigInt(this.keccak(payload)),
-        account = this.account.toLowerCase(),
-        accountBN = BigInt(account),
-        secretBN = passcode - accountBN;
-      // check validator:
-      // if (this.redPacket.condition !== this.ZERO_ADDRESS) {
-      //   let validator = new ethers.Contract(
-      //     this.redPacket.condition,
-      //     this.redPacket.conditionABI,
-      //     getWeb3Provider().getSigner()
-      //   );
-      //   let r = await validator.check(
-      //     this.redPacket.redPacketAddress,
-      //     this.redPacket.id,
-      //     account
-      //   );
-      //   if (!r) {
-      //     return this.showAlert(
-      //       "Error",
-      //       "You cannot open this red packet by address " +
-      //         this.redPacket.abbrAddress(account)
-      //     );
-      //   }
-      // }
-      // check password:
-      // console.log(
-      //   "passcode hash stored in contract:",
-      //   this.redPacket.passcodeHash.toString()
-      // );
-      console.log("passcode from user input = " + passcode.toString());
-      console.log("secret = " + secretBN);
-      let { proof, publicSignals } = await this.prove(accountBN, secretBN);
-      console.log(
-        "proof:\n" +
-          JSON.stringify(proof, null, 2) +
-          "\n" +
-          JSON.stringify(publicSignals, null, 2)
-      );
-      // let passcodeHashBN = BigInt(publicSignals[0]);
-      // if (!passcodeHashBN.eq(this.redPacket.passcodeHash)) {
-      //   return this.showAlert("Error", "Invalid password.");
-      // }
-      // open:
-      let proofs = [
-          proof.pi_a[0],
-          proof.pi_a[1],
-          proof.pi_b[0][1],
-          proof.pi_b[0][0],
-          proof.pi_b[1][1],
-          proof.pi_b[1][0],
-          proof.pi_c[0],
-          proof.pi_c[1],
-        ],
-        signer = await getWeb3Provider().getSigner(),
-        rpContract = new ethers.Contract(
-          Consts.redPacketAddress,
-          Consts.redPacketABI,
-          signer
-        ),
-        loading = this.showLoading("Open", "Check red packet status...");
-      for (let i = 0; i < proofs.length; i++) {
-        // string -> BN:
-        // proofs[i] = BigInt(proofs[i]).toHexString();
-        proofs[i] = BigInt(proofs[i]);
-      }
-      try {
-        // is opened?
-        // let opened = await rpContract.isOpened(this.redPacket.id, account);
-        // if (opened) {
-        //   throw "You have already opened the red packet.";
-        // }
-        // loading.setMessage("Verify zk-proof...");
-        // console.log("call verifyProof:");
-        // for (let i = 0; i < proofs.length; i++) {
-        //   console.log(proofs[i]);
-        // }
-        // console.log(this.redPacket.passcodeHash.toString());
-        // console.log(accountBN.toHexString());
-        // let r = await rpContract.verifyProof(
-        //   [proofs[0], proofs[1]],
-        //   [
-        //     [proofs[2], proofs[3]],
-        //     [proofs[4], proofs[5]],
-        //   ],
-        //   [proofs[6], proofs[7]],
-        //   [passcodeHashBN.toHexString(), accountBN.toHexString()]
-        // );
-        // if (!r) {
-        //   throw "Generate proof failed.";
-        // }
-        loading.setMessage("Please sign transaction in MetaMask...");
-        console.log(
-          "call open: " + this.redPacket.id + "[" + proofs.join(",") + "]"
-        );
-        let passcodeHash = BigInt(publicSignals[0]);
-        let tx = await rpContract.claimHongbao(passcodeHash, proofs);
-        loading.setMessage("Please wait for blockchain confirmation...");
-        await tx.wait(1);
-        loading.setMessage("Get transaction logs...");
-        // get red packet id from log:
-        let receipt = await getWeb3Provider().getTransactionReceipt(tx.hash);
-        let logs = receipt.logs;
-        for (let i = 0; i < logs.length; i++) {
-          let log = logs[i];
-          if (log.topics && log.topics[0] === this.redPacket.withdrawTopic) {
-            this.bonusBN = BigInt("0x" + log.data.substring(66, 66 + 64), 16);
-            console.log("bonus: " + this.bonusBN);
-            break;
-          }
-        }
-        // this.toAddress = this.redPacket.abbrAddress(account);
-        this.opened = true;
-        loading.close();
-      } catch (err) {
-        loading.close();
-        return this.showAlert("Error", this.translateError(err));
       }
     },
     abbrAddress(addr) {
@@ -798,13 +648,12 @@ export default {
         </div>
       </nav>
 
-      <div class="pb-5" style="padding-top: 80px">
+      <div class="pb-5" style="padding-top: 40px">
         <div v-show="!invalid" class="row g-0 mt-4">
           <div class="col">
             <div class="container g-0 red-packet"></div>
             <div class="container g-0 red-packet">
               <img src="../../assets/img/faucet.jpg" />
-              <!-- 位置调一下 -->
               <div>
                 <div>
                   <p readonly class="text-white">
