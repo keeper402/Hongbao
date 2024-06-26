@@ -4,8 +4,6 @@ import { chains } from "@/assets/js/chains";
 import { RedPacket } from "@/utils/RedPacket";
 import { ethers, JsonRpcProvider } from "ethers";
 import { groth16 } from "snarkjs";
-import $ from "jquery";
-import { Modal as BootstrapModal } from "bootstrap";
 import Consts from "@/utils/Consts";
 
 export default {
@@ -217,76 +215,76 @@ export default {
       });
     },
     showAlert(title, message) {
-      let m = $("#alertModal");
-      m.find(".x-title").text(title);
-      m.find(".x-message").text(message);
-      let myModal = new BootstrapModal(m.get(0), {
-        backdrop: "static",
-        keyboard: false,
-      });
-      myModal.show();
-      // alert(title + " _ " + message);
+      // let m = $("#alertModal");
+      // m.find(".x-title").text(title);
+      // m.find(".x-message").text(message);
+      // let myModal = new bootstrap.Modal(m.get(0), {
+      //   backdrop: "static",
+      //   keyboard: false,
+      // });
+      // myModal.show();
+      alert(title + " _ " + message);
     },
 
     showInfo(title, message) {
-      let m = $("#infoModal");
-      m.find(".x-title").text(title);
-      if (message.startsWith("<")) {
-        m.find(".x-message").html(message);
-      } else {
-        m.find(".x-message").text(message);
-      }
-      let myModal = new BootstrapModal(m.get(0), {
-        backdrop: "static",
-        keyboard: false,
-      });
-      myModal.show();
-      // alert(title + " _ " + message);
+      // let m = $("#infoModal");
+      // m.find(".x-title").text(title);
+      // if (message.startsWith("<")) {
+      //   m.find(".x-message").html(message);
+      // } else {
+      //   m.find(".x-message").text(message);
+      // }
+      // let myModal = new bootstrap.Modal(m.get(0), {
+      //   backdrop: "static",
+      //   keyboard: false,
+      // });
+      // myModal.show();
+      alert(title + " _ " + message);
     },
 
     showInput(onOkClicked) {
-      let m = $("#inputModal"),
-        ok = m.find("button.btn-primary");
-      $("#inputPassword").val("");
-      let myModal = new BootstrapModal(m.get(0), {
-        backdrop: "static",
-        keyboard: false,
-      });
-      ok.click(() => {
-        myModal.hide();
-        ok.off("click");
-        setTimeout(() => {
-          onOkClicked && onOkClicked($("#inputPassword").val());
-        }, 500);
-      });
-      myModal.show();
-      // let pwd = prompt("Input Password");
-      // onOkClicked && onOkClicked(pwd);
+      // let m = $("#inputModal"),
+      //   ok = m.find("button.btn-primary");
+      // $("#inputPassword").val("");
+      // let myModal = new bootstrap.Modal(m.get(0), {
+      //   backdrop: "static",
+      //   keyboard: false,
+      // });
+      // ok.click(() => {
+      //   myModal.hide();
+      //   ok.off("click");
+      //   setTimeout(() => {
+      //     onOkClicked && onOkClicked($("#inputPassword").val());
+      //   }, 500);
+      // });
+      // myModal.show();
+      let pwd = prompt("Input Password");
+      onOkClicked && onOkClicked(pwd);
     },
 
     showLoading(title, message) {
-      let m = $("#loadingModal");
-      let myModal = new BootstrapModal(m.get(0), {
-        backdrop: "static",
-        keyboard: false,
-      });
+      // let m = $("#loadingModal");
+      // let myModal = new bootstrap.Modal(m.get(0), {
+      //   backdrop: "static",
+      //   keyboard: false,
+      // });
       alert(title + " _ " + message);
       let obj = {
         setTitle: (t) => {
-          m.find(".x-title").text(t);
+          // m.find(".x-title").text(t);
         },
         setMessage: (t) => {
-          m.find(".x-message").text(t);
+          // m.find(".x-message").text(t);
         },
         close: () => {
           setTimeout(() => {
-            myModal.hide();
+            // myModal.hide();
           }, 500);
         },
       };
-      obj.setTitle(title);
-      obj.setMessage(message);
-      myModal.show();
+      // obj.setTitle(title);
+      // obj.setMessage(message);
+      // myModal.show();
       return obj;
     },
 
@@ -819,9 +817,9 @@ export default {
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/faucet">
+              <a class="nav-link" href="/receive">
                 <i class="bi bi-list-ul" />
-                Faucet
+                Receive
               </a>
             </li>
           </ul>
@@ -856,27 +854,6 @@ export default {
       </nav>
 
       <div class="pb-5" style="padding-top: 80px">
-        <div v-show="invalid" class="row g-0 mt-4">
-          <div class="col text-center">
-            <p class="fs-1">Red Packet Not Found</p>
-          </div>
-        </div>
-
-        <div v-show="!invalid && !ready" class="row g-0 mt-4">
-          <div class="col text-center">
-            <p>
-              Please connect MetaMask with
-              <span v-text="correctNetworkName"></span>
-            </p>
-          </div>
-        </div>
-
-        <div v-show="!invalid && loading" class="row g-0 mt-4">
-          <div class="col text-center">
-            <div class="spinner-border"></div>
-          </div>
-        </div>
-
         <div v-show="!invalid" class="row g-0 mt-4">
           <div class="col">
             <div
@@ -895,72 +872,19 @@ export default {
               for customization.
             </div>
             <div class="container g-0 red-packet">
-              <div class="card golden-border">
-                <div
-                  class="card-body p-0"
-                  v-bind:style="{ 'background-image': coverImage }"
-                >
-                  <div class="info text-center">
-                    <div class="ms-4 me-4">
-                      <div class="mt-5">Red Packet</div>
-                      <!-- <div class="mt-2" v-text="creatorName"></div> -->
-                      <div class="mt-5 fs-4" v-text="greeting"></div>
-                      <!-- <div v-show="displayOpenInfo" class="mt-4 fs-7">
-                        Opened
-                        <span
-                          v-text="redPacket.total - redPacket.totalLeft"
-                        ></span>
-                        /
-                        <span v-text="redPacket.total"></span>
-                      </div> -->
-                      <!-- <div v-show="displayOpenInfo" class="mt-2 fs-7">
-                        <span v-text="token && token.symbol"></span>
-                        <span v-text="amountLeft"></span>
-                        /
-                        <span v-text="amount"></span>
-                      </div> -->
-                    </div>
-                  </div>
-                  <div v-show="opened" class="opened text-center">
-                    <div class="m-2">
-                      <div class="mt-5">Congratulations! You got</div>
-                      <div class="mt-3 coin-logo">
-                        <img v-bind:src="tokenIconUrl" />
-                      </div>
-                      <div class="mt-3 fs-4">
-                        <span v-text="bonus"></span>
-                        <span v-text="token && token.symbol"></span>
-                      </div>
-                      <div class="mt-5">Has received to</div>
-                      <div class="mt-2" v-text="toAddress"></div>
-                    </div>
-                  </div>
-                  <div class="triangle triangle-1"></div>
-                  <div class="triangle triangle-2"></div>
-                  <div class="triangle triangle-1-cover"></div>
-                  <div class="triangle triangle-2-cover"></div>
-                  <div class="rectangle-bottom"></div>
-                  <div
-                    v-show="!opened"
-                    class="circle can-open"
-                    v-on:click="openRedPacket"
-                  >
-                    <img v-bind:src="openImage" />
-                  </div>
-                </div>
+            </div>
+            <div class="container g-0 red-packet">
+              <img src="../../assets/img/faucet.jpg">
+              <!-- 位置调一下 -->
+              <p readonly style="color: #FFFFFF;">
+                This faucet is used to receive test tokens. You can receive 100eth tokens here every day. Then fill in this token address ${HONGBAOCOIN_ADDR} when sending out Hongbao, and you can try it out and send out red envelopes.
+              </p>
+              <div class="modal-footer">
+                <button class="btn btn-primary" type="button">Claim</button>
               </div>
             </div>
-            <!-- <div
-              v-show="
-                redPacket.condition !==
-                '0x0000000000000000000000000000000000000000'
-              "
-              class="mt-4 mb-4 text-center text-white"
-            >
-              <span class="text-white"
-                >* This red packet has address validation logic.</span
-              >
             </div> -->
+
             <div
               v-show="canCustomize && !redPacket.preview"
               class="mt-4 mb-4 text-center text-white"
@@ -973,84 +897,9 @@ export default {
                 >Customize Your Red Packet</a
               >
             </div>
-            <!-- <div id="customize" style="display: none">
-              <div
-                class="card mt-4"
-                style="width: 328px; margin-left: auto; margin-right: auto"
-              >
-                <div class="card-body">
-                  <h5 class="card-title">Customize Red Packet</h5>
-                  <form>
-                    <input name="chain" type="hidden" value="" />
-                    <input name="id" type="hidden" value="" />
-                    <input name="preview" type="hidden" value="true" />
-                    <div class="mb-3">
-                      <label class="form-label">Greeting:</label>
-                      <input
-                        class="form-control form-control-sm"
-                        maxlength="50"
-                        name="rpGreeting"
-                        placeholder="Best Wishes!"
-                      />
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Creator Name:</label>
-                      <input
-                        class="form-control form-control-sm"
-                        maxlength="50"
-                        name="rpCreator"
-                        placeholder="0x"
-                      />
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Cover Image:</label>
-                      <input
-                        class="form-control form-control-sm"
-                        maxlength="1000"
-                        name="rpCoverImage"
-                        placeholder="https://example.com/path/to/image.png"
-                      />
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Open Image:</label>
-                      <input
-                        class="form-control form-control-sm"
-                        maxlength="1000"
-                        name="rpOpenImage"
-                        placeholder="https://example.com/path/to/image.png"
-                      />
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Token Image:</label>
-                      <input
-                        class="form-control form-control-sm"
-                        maxlength="1000"
-                        name="rpIconImage"
-                        placeholder="https://example.com/path/to/image.png"
-                      />
-                    </div>
-                    <div class="mb-3 form-check">
-                      <label class="form-check-label">
-                        <input
-                          class="form-check-input"
-                          name="rpDisplayOpenInfo"
-                          type="checkbox"
-                          value="false"
-                        />
-                        Do Not Display Open Info</label
-                      >
-                    </div>
-                    <button class="btn btn-outline-primary" @click="preview">
-                      Preview
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div> -->
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 

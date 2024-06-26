@@ -26,6 +26,11 @@ export const constantRoutes = [
         hidden: true
     },
     {
+        path: '/faucet',
+        component: () => import('@/views/redPacket/Faucet'),
+        hidden: true
+    },
+    {
         path: '/404',
         title: 'Page not found',
         component: () => import('@/views/error/404'),
