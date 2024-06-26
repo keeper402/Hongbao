@@ -19,9 +19,6 @@ export default {
       token: null,
       redPacket: new RedPacket(),
       version: 0, // just used to update computed property
-      // BLOCKCHAINS: chains.BLOCKCHAINS,
-      // ETH_ADDRESS: chains.ETH_ADDRESS,
-      // ZERO_ADDRESS: chains.ZERO_ADDRESS,
     };
   },
   computed: {
@@ -137,51 +134,24 @@ export default {
     this.init();
   },
   methods: {
-
     async claimFaucet() {
       // <!-- 领水逻辑   -->
       try {
         const signer = await getWeb3Provider().getSigner();
         const faucet = new ethers.Contract(
-            Consts.faucetAddress,
-            Consts.faucetABI,
-            signer
+          Consts.faucetAddress,
+          Consts.faucetABI,
+          signer
         );
         let tx = await faucet.requestTokens();
         this.showAlert("Success", "you have claimed 10 hong!");
-      }catch (err) {
+      } catch (err) {
         return this.showAlert("Error", this.translateError(err));
       }
     },
 
-
     async init() {
       await this.connectWallet();
-      // await this.loadRedPacket();
-      // if (this.redPacket.preview) {
-      //   // show customize:
-      //   let $customize = $("#customize"),
-      //     $chain = $customize.find("input[name=chain]"),
-      //     $id = $customize.find("input[name=id]"),
-      //     $rpGreeting = $customize.find("input[name=rpGreeting]"),
-      //     $rpCreator = $customize.find("input[name=rpCreator]"),
-      //     $rpCoverImage = $customize.find("input[name=rpCoverImage]"),
-      //     $rpOpenImage = $customize.find("input[name=rpOpenImage]"),
-      //     $rpIconImage = $customize.find("input[name=rpIconImage]"),
-      //     $rpDisplayOpenInfo = $customize.find("input[name=rpDisplayOpenInfo]");
-      //   $chain.val(this.redPacket.chain);
-      //   $id.val(this.redPacket.id);
-      //   $rpGreeting.val(this.redPacket.getRpGreeting());
-      //   $rpCreator.val(this.redPacket.getRpCreator(this.redPacket.creator));
-      //   $rpCoverImage.val(this.redPacket.getRpCoverImage());
-      //   $rpOpenImage.val(this.redPacket.getRpOpenImage());
-      //   $rpIconImage.val(this.redPacket.getRpIconImage());
-      //   $rpDisplayOpenInfo.prop(
-      //     "checked",
-      //     !this.redPacket.getRpDisplayOpenInfo()
-      //   );
-      //   $("#customize").show();
-      // }
     },
     // preview() {
     //   this.connectWallet();
@@ -320,49 +290,6 @@ export default {
       return err.message || err.toString();
     },
 
-    // async loadRedPacket() {
-    //   if (this.loaded) {
-    //     return;
-    //   }
-    // let useInjectedProvider = this.chainId === this.redPacket.chain;
-    // console.log("start load redpacket...");
-    // this.loading = true;
-    // try {
-    // let provider = useInjectedProvider
-    //     ? getWeb3Provider()
-    //     : this.getRpcProvider(this.BLOCKCHAINS[this.redPacket.chain].rpc);
-    // const signer = await getWeb3Provider().getSigner();
-    // const rpContract = new ethers.Contract(
-    //   Consts.redPacketAddress,
-    //   Consts.redPacketABI,
-    //   signer
-    // );
-    // const rp = await rpContract.getRedPacket(this.redPacket.id);
-    // console.log("loaded red packet:", rp);
-    // this.redPacket.setRedPacketInfo(rp);
-    // this.redPacket.verifyParams();
-    // this.version++;
-    // if (this.redPacket.token.toLowerCase() === this.ETH_ADDRESS) {
-    //   let c = this.BLOCKCHAINS[this.redPacket.chain],
-    //     symbol = (c && c.native) || "ETH";
-    //   this.token = new Token(this.ETH_ADDRESS, symbol, 18);
-    // } else {
-    //   // load ERC:
-    //   let ercContract = new ethers.Contract(
-    //       this.redPacket.token,
-    //       this.redPacket.erc20ABI,
-    //       useInjectedProvider ? provider.getSigner() : provider
-    //     ),
-    //     symbol = await ercContract.symbol(),
-    //     decimals = await ercContract.decimals();
-    //   this.token = new Token(this.redPacket.token, symbol, decimals);
-    // }
-    //     this.loaded = true;
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
-    //   this.loading = false;
-    // },
     async signUrl() {
       try {
         if (!this.account) {
@@ -874,65 +801,45 @@ export default {
       <div class="pb-5" style="padding-top: 80px">
         <div v-show="!invalid" class="row g-0 mt-4">
           <div class="col">
-            <div
-              v-if="redPacket.preview"
-              class="alert alert-warning text-center mb-4"
-              role="alert"
-            >
-              You are customize the red packet. Create the final URL by
-              <a href="#0" v-on:click="signUrl">sign the parameters</a>. Check
-              the
-              <a
-                href="https://github.com/michaelliao/red-packet-contract/blob/master/docs/customize.md"
-                target="_blank"
-                >document</a
-              >
-              for customization.
-            </div>
+            <div class="container g-0 red-packet"></div>
             <div class="container g-0 red-packet">
-            </div>
-            <div class="container g-0 red-packet">
-              <img src="../../assets/img/faucet.jpg">
+              <img src="../../assets/img/faucet.jpg" />
               <!-- 位置调一下 -->
-              <p readonly style="color: #FFFFFF;">
-                This faucet is used to receive test tokens. You can receive 100eth tokens here every day. Then fill in this token address ${HONGBAOCOIN_ADDR} when sending out Hongbao, and you can try it out and send out red envelopes.
-              </p>
-              <div class="modal-footer" v-on:click="claimFaucet">
-                <button class="btn btn-primary" type="button">Claim</button>
+              <div>
+                <div>
+                  <p readonly class="text-white">
+                    This faucet is used to receive test tokens. You can receive
+                    100eth tokens here every day. Then fill in this token
+                    address ${HONGBAOCOIN_ADDR} when sending out Hongbao, and
+                    you can try it out and send out red envelopes.
+                  </p>
+                </div>
+                <div v-on:click="claimFaucet">
+                  <button class="btn btn-primary" type="button">Claim</button>
+                </div>
               </div>
             </div>
-            </div> -->
+          </div>
 
-            <div
-              v-show="canCustomize && !redPacket.preview"
-              class="mt-4 mb-4 text-center text-white"
+          <div
+            v-show="canCustomize && !redPacket.preview"
+            class="mt-4 mb-4 text-center text-white"
+          >
+            <a
+              class="text-white"
+              href="#0"
+              target=" _blank"
+              v-on:click="gotoCustomizeUrl"
+              >Customize Your Red Packet</a
             >
-              <a
-                class="text-white"
-                href="#0"
-                target=" _blank"
-                v-on:click="gotoCustomizeUrl"
-                >Customize Your Red Packet</a
-              >
-            </div>
           </div>
         </div>
       </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-/* body {
-  height: 100vh;
-  background-size: cover;
-  background-image: linear-gradient(
-    30deg,
-    #9943c7 0%,
-    #c850c0 20%,
-    #ffa770 100%
-  );
-} */
-
 .red-packet {
   width: 328px;
 }

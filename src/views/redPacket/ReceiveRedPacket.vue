@@ -20,10 +20,6 @@ export default {
       password: "",
       token: null,
       redPacket: new RedPacket(),
-      version: 0, // just used to update computed property
-      // BLOCKCHAINS: chains.BLOCKCHAINS,
-      // ETH_ADDRESS: chains.ETH_ADDRESS,
-      // ZERO_ADDRESS: chains.ZERO_ADDRESS,
     };
   },
   computed: {
@@ -141,31 +137,6 @@ export default {
   methods: {
     async init() {
       await this.connectWallet();
-      // await this.loadRedPacket();
-      // if (this.redPacket.preview) {
-      //   // show customize:
-      //   let $customize = $("#customize"),
-      //     $chain = $customize.find("input[name=chain]"),
-      //     $id = $customize.find("input[name=id]"),
-      //     $rpGreeting = $customize.find("input[name=rpGreeting]"),
-      //     $rpCreator = $customize.find("input[name=rpCreator]"),
-      //     $rpCoverImage = $customize.find("input[name=rpCoverImage]"),
-      //     $rpOpenImage = $customize.find("input[name=rpOpenImage]"),
-      //     $rpIconImage = $customize.find("input[name=rpIconImage]"),
-      //     $rpDisplayOpenInfo = $customize.find("input[name=rpDisplayOpenInfo]");
-      //   $chain.val(this.redPacket.chain);
-      //   $id.val(this.redPacket.id);
-      //   $rpGreeting.val(this.redPacket.getRpGreeting());
-      //   $rpCreator.val(this.redPacket.getRpCreator(this.redPacket.creator));
-      //   $rpCoverImage.val(this.redPacket.getRpCoverImage());
-      //   $rpOpenImage.val(this.redPacket.getRpOpenImage());
-      //   $rpIconImage.val(this.redPacket.getRpIconImage());
-      //   $rpDisplayOpenInfo.prop(
-      //     "checked",
-      //     !this.redPacket.getRpDisplayOpenInfo()
-      //   );
-      //   $("#customize").show();
-      // }
     },
     // preview() {
     //   this.connectWallet();
@@ -303,50 +274,6 @@ export default {
       }
       return err.message || err.toString();
     },
-
-    // async loadRedPacket() {
-    //   if (this.loaded) {
-    //     return;
-    //   }
-    // let useInjectedProvider = this.chainId === this.redPacket.chain;
-    // console.log("start load redpacket...");
-    // this.loading = true;
-    // try {
-    // let provider = useInjectedProvider
-    //     ? getWeb3Provider()
-    //     : this.getRpcProvider(this.BLOCKCHAINS[this.redPacket.chain].rpc);
-    // const signer = await getWeb3Provider().getSigner();
-    // const rpContract = new ethers.Contract(
-    //   Consts.redPacketAddress,
-    //   Consts.redPacketABI,
-    //   signer
-    // );
-    // const rp = await rpContract.getRedPacket(this.redPacket.id);
-    // console.log("loaded red packet:", rp);
-    // this.redPacket.setRedPacketInfo(rp);
-    // this.redPacket.verifyParams();
-    // this.version++;
-    // if (this.redPacket.token.toLowerCase() === this.ETH_ADDRESS) {
-    //   let c = this.BLOCKCHAINS[this.redPacket.chain],
-    //     symbol = (c && c.native) || "ETH";
-    //   this.token = new Token(this.ETH_ADDRESS, symbol, 18);
-    // } else {
-    //   // load ERC:
-    //   let ercContract = new ethers.Contract(
-    //       this.redPacket.token,
-    //       this.redPacket.erc20ABI,
-    //       useInjectedProvider ? provider.getSigner() : provider
-    //     ),
-    //     symbol = await ercContract.symbol(),
-    //     decimals = await ercContract.decimals();
-    //   this.token = new Token(this.redPacket.token, symbol, decimals);
-    // }
-    //     this.loaded = true;
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
-    //   this.loading = false;
-    // },
     async signUrl() {
       try {
         if (!this.account) {
@@ -435,31 +362,6 @@ export default {
         account = this.account.toLowerCase(),
         accountBN = BigInt(account),
         secretBN = passcode - accountBN;
-      // check validator:
-      // if (this.redPacket.condition !== this.ZERO_ADDRESS) {
-      //   let validator = new ethers.Contract(
-      //     this.redPacket.condition,
-      //     this.redPacket.conditionABI,
-      //     getWeb3Provider().getSigner()
-      //   );
-      //   let r = await validator.check(
-      //     this.redPacket.redPacketAddress,
-      //     this.redPacket.id,
-      //     account
-      //   );
-      //   if (!r) {
-      //     return this.showAlert(
-      //       "Error",
-      //       "You cannot open this red packet by address " +
-      //         this.redPacket.abbrAddress(account)
-      //     );
-      //   }
-      // }
-      // check password:
-      // console.log(
-      //   "passcode hash stored in contract:",
-      //   this.redPacket.passcodeHash.toString()
-      // );
       console.log("passcode from user input = " + passcode.toString());
       console.log("secret = " + secretBN);
       let { proof, publicSignals } = await this.prove(accountBN, secretBN);
@@ -600,7 +502,6 @@ export default {
         "wallet chainId changed: " + chainId + " = " + parseInt(chainId, 16)
       );
       this.chainId = parseInt(chainId, 16);
-      // await this.loadRedPacket();
     },
     async connectWallet() {
       console.log("try connect wallet...");
@@ -1055,17 +956,6 @@ export default {
 </template>
 
 <style scoped>
-/* body {
-  height: 100vh;
-  background-size: cover;
-  background-image: linear-gradient(
-    30deg,
-    #9943c7 0%,
-    #c850c0 20%,
-    #ffa770 100%
-  );
-} */
-
 .red-packet {
   width: 328px;
 }
