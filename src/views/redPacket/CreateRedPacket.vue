@@ -273,7 +273,7 @@ export default {
         } else {
           const signer3 = await getWeb3Provider().getSigner();
           let erc = new ethers.Contract(
-                  this.tokenAddress,
+              this.tokenAddress,
               Consts.ERC20_ABI,
               signer3
             ),
@@ -696,7 +696,7 @@ export default {
                         </label>
                       </div>
                     </div>
-                    <div class="mb-3 ms-4">
+                    <div class="mb-3 ms-4" v-if="tokenType != 'ETH'">
                       <label for="bonus-token" class="form-label"
                         >Token Address:</label
                       >
