@@ -19,7 +19,7 @@ export default {
       CREATE_TOPIC:
         "0xf526b6d6ff0fac13f7e16aeea0f08bc8f0789c188dc429de0ea4b56bc06e82c6",
       tokenType: "ETH",
-      tokenAddress: Consts.faucetAddress,
+      tokenAddress: Consts.coinAddress,
     };
   },
   computed: {
@@ -202,8 +202,8 @@ export default {
         if (!this.isValidAddress(this.tokenAddress)) {
           return showAlert("Error", "Token address is invalid!");
         }
-        tokenAddress = this.tokenAddress;
-        let loading1 = showLoading(
+        const tokenAddress = this.tokenAddress;
+        let loading1 = this.showLoading(
             "Get ERC Token",
             "Get ERC token information..."
           ),
@@ -267,29 +267,29 @@ export default {
         // 检查用户是否有足够的代币余额，并确保用户已经授权某个合约（例如一个红包合约）可以代表用户花费这些代币。
         if (this.tokenType === "ETH") {
           let eth_balance = await getWeb3Provider().getBalance(account);
-          if (eth_balance.lt(tokenAmount)) {
+          if (eth_balance < tokenAmount) {
             throw "You don't have enough " + this.nativeToken + ".";
           }
         } else {
           const signer3 = await getWeb3Provider().getSigner();
           let erc = new ethers.Contract(
-              tokenAddress,
+                  this.tokenAddress,
               Consts.ERC20_ABI,
               signer3
             ),
             erc_symbol = await erc.symbol(),
             erc_balance = await erc.balanceOf(account);
-          if (erc_balance.lt(tokenAmount)) {
+          if (erc_balance < tokenAmount) {
             throw "You don't have enough " + erc_symbol + ".";
           }
           console.log("check allowance...");
           loading.setMessage("Check allowance...");
           let erc_allowance = await erc.allowance(
             account,
-            Consts.RED_PACKET_ADDR
+            Consts.redPacketAddress
           );
           console.log("allowance = " + erc_allowance);
-          if (erc_allowance.lt(tokenAmount)) {
+          if (erc_allowance < tokenAmount) {
             console.log("must increase allowance.");
             loading.setMessage(
               "Please approve the Red Packet contract to spend your " +
