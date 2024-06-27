@@ -18,6 +18,8 @@ export default {
       password: "",
       CREATE_TOPIC:
         "0xf526b6d6ff0fac13f7e16aeea0f08bc8f0789c188dc429de0ea4b56bc06e82c6",
+      tokenType: "ETH",
+      tokenAddress: Consts.faucetAddress,
     };
   },
   computed: {
@@ -191,6 +193,41 @@ export default {
           "The connected network is not supported!"
         );
       }
+      // important: account must be lowercase:
+      account = this.account.toLowerCase();
+      // decimals 获取
+      if (this.tokenType === "ETH") {
+        decimals = 18;
+      } else {
+        if (!this.isValidAddress(this.tokenAddress)) {
+          return showAlert("Error", "Token address is invalid!");
+        }
+        tokenAddress = this.tokenAddress;
+        let loading1 = showLoading(
+            "Get ERC Token",
+            "Get ERC token information..."
+          ),
+          signer1 = await getWeb3Provider().getSigner(),
+          erc1 = new ethers.Contract(tokenAddress, Consts.ERC20_ABI, signer1);
+        try {
+          decimals = await erc1.decimals();
+          loading1.close();
+          console.log(
+            "got erc " +
+              tokenAddress +
+              " decimals = " +
+              decimals +
+              " type = " +
+              typeof decimals
+          );
+        } catch (err) {
+          loading1.close();
+          return showAlert(
+            "Error",
+            "Failed to get decimals of token: " + translateError(err)
+          );
+        }
+      }
       // check tokenAmount:
       if (!this.isValidBN(this.tokenAmount, decimals)) {
         return this.showAlert("Error", "Bonus amount is invalid!");
@@ -220,52 +257,53 @@ export default {
 
       let loading = this.showLoading("Create", "Check balance...");
       // @SEE：https://github.com/ethers-io/ethers.js/discussions/3752#discussioncomment-4996797
-      const signer = await getWeb3Provider().getSigner();
+      const signer2 = await getWeb3Provider().getSigner();
       const redPacket = new ethers.Contract(
         Consts.redPacketAddress,
         Consts.redPacketABI,
-        signer
+        signer2
       );
       try {
         // 检查用户是否有足够的代币余额，并确保用户已经授权某个合约（例如一个红包合约）可以代表用户花费这些代币。
-        // if (tokenAddress === this.ETH_ADDRESS) {
-        //   let eth_balance = await getWeb3Provider().getBalance(account);
-        //   if (eth_balance.lt(tokenAmount)) {
-        //     throw "You don't have enough " + this.nativeToken + ".";
-        //   }
-        // } else {
-        //   let erc = new ethers.Contract(
-        //           tokenAddress,
-        //           this.ERC20_ABI,
-        //           getWeb3Provider().getSigner(),
-        //       ),
-        //       erc_symbol = await erc.symbol(),
-        //       erc_balance = await erc.balanceOf(account);
-        //   if (erc_balance.lt(tokenAmount)) {
-        //     throw "You don't have enough " + erc_symbol + ".";
-        //   }
-        //   console.log("check allowance...");
-        //   loading.setMessage("Check allowance...");
-        //   let erc_allowance = await erc.allowance(
-        //       account,
-        //       this.RED_PACKET_ADDR,
-        //   );
-        //   console.log("allowance = " + erc_allowance);
-        //   if (erc_allowance.lt(tokenAmount)) {
-        //     console.log("must increase allowance.");
-        //     loading.setMessage(
-        //         "Please approve the Red Packet contract to spend your " +
-        //         erc_symbol +
-        //         " in MetaMask...",
-        //     );
-        //     let tx_approve = await erc.approve(
-        //         this.RED_PACKET_ADDR,
-        //         ethers.parseUnits("1000000000000000000", 18),
-        //     );
-        //     loading.setMessage("Please wait for blockchain confirmation...");
-        //     await tx_approve.wait(1);
-        //   }
-        // }
+        if (this.tokenType === "ETH") {
+          let eth_balance = await getWeb3Provider().getBalance(account);
+          if (eth_balance.lt(tokenAmount)) {
+            throw "You don't have enough " + this.nativeToken + ".";
+          }
+        } else {
+          const signer3 = await getWeb3Provider().getSigner();
+          let erc = new ethers.Contract(
+              tokenAddress,
+              Consts.ERC20_ABI,
+              signer3
+            ),
+            erc_symbol = await erc.symbol(),
+            erc_balance = await erc.balanceOf(account);
+          if (erc_balance.lt(tokenAmount)) {
+            throw "You don't have enough " + erc_symbol + ".";
+          }
+          console.log("check allowance...");
+          loading.setMessage("Check allowance...");
+          let erc_allowance = await erc.allowance(
+            account,
+            Consts.RED_PACKET_ADDR
+          );
+          console.log("allowance = " + erc_allowance);
+          if (erc_allowance.lt(tokenAmount)) {
+            console.log("must increase allowance.");
+            loading.setMessage(
+              "Please approve the Red Packet contract to spend your " +
+                erc_symbol +
+                " in MetaMask..."
+            );
+            let tx_approve = await erc.approve(
+              Consts.redPacketAddress,
+              ethers.parseUnits("1000000000000000000", 18)
+            );
+            loading.setMessage("Please wait for blockchain confirmation...");
+            await tx_approve.wait(1);
+          }
+        }
         loading.setMessage("Please sign transaction in MetaMask...");
         // value = tokenAddress === this.ETH_ADDRESS ? tokenAmount : 0;
         value = tokenAmount;
@@ -287,15 +325,29 @@ export default {
             "value = " +
             value
         );
-        let tx = await redPacket.createHongbao(
-          passcodeHash,
-          total,
-          tokenAmount,
-          bonusType,
-          {
-            value: value,
-          }
-        );
+        let tx;
+        if (this.tokenType === "ETH") {
+          tx = await redPacket.createHongbao(
+            passcodeHash,
+            total,
+            tokenAmount,
+            bonusType,
+            {
+              value: value,
+            }
+          );
+        } else {
+          tx = await redPacket.createHongbaoWithToken(
+            passcodeHash,
+            total,
+            tokenAmount,
+            bonusType,
+            this.tokenAddress,
+            {
+              value: value,
+            }
+          );
+        }
         loading.setMessage("Please wait for blockchain confirmation...");
         await tx.wait(1);
         loading.setMessage("Get transaction logs...");
@@ -617,6 +669,50 @@ export default {
                   <h5 class="card-title">Create a Red Packet</h5>
                   <hr />
                   <form onsubmit="return false">
+                    <div class="mb-3">
+                      <label class="form-label">Bonus:</label>
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="tokenType"
+                            value="ETH"
+                            v-model="tokenType"
+                          />
+                          Linea Sepolia ETH
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="tokenType"
+                            value="ERC"
+                            v-model="tokenType"
+                          />
+                          ERC20
+                        </label>
+                      </div>
+                    </div>
+                    <div class="mb-3 ms-4">
+                      <label for="bonus-token" class="form-label"
+                        >Token Address:</label
+                      >
+                      <div class="input-group">
+                        <input
+                          v-bind:disabled="tokenType === 'ETH'"
+                          v-model="tokenAddress"
+                          id="bonus-token"
+                          type="text"
+                          maxlength="42"
+                          class="form-control"
+                          placeholder="0x"
+                        />
+                      </div>
+                      <div class="form-text">The token you want to sent.</div>
+                    </div>
                     <div class="mb-3">
                       <label class="form-label" for="bonus-amount"
                         >Bonus Amount:</label
