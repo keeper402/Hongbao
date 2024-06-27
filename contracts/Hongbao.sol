@@ -44,7 +44,7 @@ contract Hongbao {
 
     mapping(bytes32 => bool) internal claimedMap; // 记录已经领取的红包的地址
 
-    //id -> 红包 (用于查询）
+    //口令 -> 红包 (用于查询）
     mapping(uint256 => HongbaoInfo) internal hongbaoMap;
 
     //口令 -> 红包
@@ -54,7 +54,7 @@ contract Hongbao {
     event HongbaoCreated(uint256 id, uint256 indexed passwordHash, uint total, uint amount, address indexed creator, ReceiveType receiveType, address token);
 
     // 领取红包事件
-    event HongbaoClaimed(uint256 indexed passwordHash, address indexed claimer, uint256 claimAmount, uint remaining, uint256 remainingAmount);
+    event HongbaoClaimed(uint256 id, uint256 indexed passwordHash, address indexed claimer, uint256 claimAmount, uint remaining, uint256 remainingAmount);
 
     // 创建红包
     function createHongbao(uint256 passwordHash, uint total, uint amount, ReceiveType receiveType) public payable {
@@ -119,6 +119,7 @@ contract Hongbao {
         h.remainingAmount = msg.value;
         h.receiveType = receiveType;
         h.timestamp = block.timestamp;
+        h.token = token;
 
         idMap[h.id]= h;
         emit HongbaoCreated(h.id, passwordHash, total, amount, msg.sender, receiveType, token);
@@ -162,7 +163,7 @@ contract Hongbao {
         hongbao.remainingAmount -= claimAmount;
 
         claimedMap[claimKey] = true;
-        emit HongbaoClaimed(passwordHash, msg.sender, claimAmount, hongbao.remaining, hongbao.remainingAmount);
+        emit HongbaoClaimed(hongbao.id, passwordHash, msg.sender, claimAmount, hongbao.remaining, hongbao.remainingAmount);
         return verify;
     }
 
