@@ -51,7 +51,7 @@ contract Hongbao {
     mapping(uint256 => HongbaoInfo[]) internal fullyClaimedHongbaoMap;
 
     // 创建红包事件
-    event HongbaoCreated(uint256 indexed passwordHash, uint total, uint amount, address indexed creator, ReceiveType receiveType, address token);
+    event HongbaoCreated(uint256 id, uint256 indexed passwordHash, uint total, uint amount, address indexed creator, ReceiveType receiveType, address token);
 
     // 领取红包事件
     event HongbaoClaimed(uint256 indexed passwordHash, address indexed claimer, uint256 claimAmount, uint remaining, uint256 remainingAmount);
@@ -84,7 +84,7 @@ contract Hongbao {
         h.timestamp = block.timestamp;
 
         idMap[h.id]= h;
-        emit HongbaoCreated(passwordHash, total, amount, msg.sender, receiveType, address(0));
+        emit HongbaoCreated(h.id, passwordHash, total, amount, msg.sender, receiveType, address(0));
     }
 
     // 创建红包
@@ -109,6 +109,7 @@ contract Hongbao {
         } else {
             (IERC20(token)).safeTransferFrom(msg.sender, address(this), amount);
         }
+        nextId++;
 
         h.sender = msg.sender;
         h.passwordHash = passwordHash;
@@ -119,7 +120,8 @@ contract Hongbao {
         h.receiveType = receiveType;
         h.timestamp = block.timestamp;
 
-        emit HongbaoCreated(passwordHash, total, amount, msg.sender, receiveType, token);
+        idMap[h.id]= h;
+        emit HongbaoCreated(h.id, passwordHash, total, amount, msg.sender, receiveType, token);
     }
 
     // 查询当前的剩余的值

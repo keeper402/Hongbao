@@ -200,7 +200,7 @@ export default {
         decimals = 18;
       } else {
         if (!this.isValidAddress(this.tokenAddress)) {
-          return showAlert("Error", "Token address is invalid!");
+          return this.showAlert("Error", "Token address is invalid!");
         }
         const tokenAddress = this.tokenAddress;
         let loading1 = this.showLoading(
@@ -222,9 +222,9 @@ export default {
           );
         } catch (err) {
           loading1.close();
-          return showAlert(
+          return this.showAlert(
             "Error",
-            "Failed to get decimals of token: " + translateError(err)
+            "Failed to get decimals of token: " + this.translateError(err)
           );
         }
       }
@@ -364,7 +364,7 @@ export default {
         }
         loading.close();
         // 显示结果，跳转到列表页
-        let url = location.protocol + "//" + location.host + "/recieve";
+        let url = location.protocol + "//" + location.host + "/receive";
         this.showInfo(
           "Success",
           "<p>Red packet created successfully!</p><p>Password: " +
