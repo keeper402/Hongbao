@@ -12,14 +12,6 @@ async function main() {
 
     console.log("Account balance:", await provider.getBalance(deployer.address));
 
-    // depoly verifier
-    const Groth16Verifier = await ethers.getContractFactory("Groth16Verifier");
-    const verifier = await Groth16Verifier.deploy();
-    const verifierAddress = await verifier.getAddress();
-    // deploy hongbao
-    const Hongbao = await ethers.getContractFactory("Hongbao");
-    const hongbao = await Hongbao.deploy(verifierAddress);
-    const hongbaoAddress = await hongbao.getAddress();
     // deploy token
     const HongbaoCoin = await ethers.getContractFactory("TetherToken");
     const hongbaoCoin = await HongbaoCoin.deploy(100000000 * 1000000, 'Hongbao Coin', 'Hong', 6);
@@ -30,8 +22,6 @@ async function main() {
     const faucetAddress = await faucet.getAddress();
 
 
-    console.log("verifier address:", verifierAddress);
-    console.log("hongbao address:",hongbaoAddress);
     console.log("HongbaoCoin address:",HongbaoCoinAddress);
     console.log("faucet address:",faucetAddress);
 }

@@ -9,7 +9,7 @@ import { Modal as BootstrapModal } from "bootstrap";
 import Consts from "@/utils/Consts";
 
 // 先改文本
-const text = `This faucet is used to receive test tokens. You can receive 10eth tokens here every day. Then fill in this token address [${process.env.VUE_APP_COIN_ADDRESS}] when sending out Hongbao, and you can try it out and send out red packets.`
+const text = `This faucet is used to receive test tokens. You can receive 100 tokens here every 2 hours. Then fill in this token address [${process.env.VUE_APP_COIN_ADDRESS}] when sending out Hongbao, and you can try it out and send out red packets.`
 $(document).ready(function (){
   document.getElementById("intro").innerText=text;
 })

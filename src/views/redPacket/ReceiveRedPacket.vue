@@ -824,16 +824,16 @@ export default {
                   </div>
                   <div v-show="opened" class="opened text-center">
                     <div class="m-2">
-                      <div class="mt-5">Congratulations! You got</div>
-                      <div class="mt-3 coin-logo">
-                        <img v-bind:src="tokenIconUrl" />
-                      </div>
-                      <div class="mt-3 fs-4">
-                        <span v-text="bonus"></span>
-                        <span v-text="token && token.symbol"></span>
-                      </div>
-                      <div class="mt-5">Has received to</div>
-                      <div class="mt-2" v-text="toAddress"></div>
+                      <div class="mt-5">Congratulations! You got the Red Packet</div>
+<!--                      <div class="mt-3 coin-logo">-->
+<!--                        <img v-bind:src="tokenIconUrl" />-->
+<!--                      </div>-->
+<!--                      <div class="mt-3 fs-4">-->
+<!--                        <span v-text="bonus"></span>-->
+<!--                        <span v-text="token && token.symbol"></span>-->
+<!--                      </div>-->
+<!--                      <div class="mt-5">Has received to</div>-->
+<!--                      <div class="mt-2" v-text="toAddress"></div>-->
                     </div>
                   </div>
                   <div class="triangle triangle-1"></div>

@@ -43,19 +43,19 @@ contract HongbaoDev {
     uint256 private nextId = 0;
     mapping(uint256 => HongbaoInfo) public idMap;
 
-    mapping(bytes => bool) internal claimedMap; // 记录已经领取的红包的地址
+    mapping(bytes32 => bool) internal claimedMap; // 记录已经领取的红包的地址
 
-    //id -> 红包 (用于查询）
+    //口令 -> 红包 (用于查询）
     mapping(uint256 => HongbaoInfo) internal hongbaoMap;
 
     //口令 -> 红包
     mapping(uint256 => HongbaoInfo[]) internal fullyClaimedHongbaoMap;
 
     // 创建红包事件
-    event HongbaoCreated(uint256 indexed passwordHash, uint total, uint amount, address indexed creator, ReceiveType receiveType, address token);
+    event HongbaoCreated(uint256 id, uint256 indexed passwordHash, uint total, uint amount, address indexed creator, ReceiveType receiveType, address token);
 
     // 领取红包事件
-    event HongbaoClaimed(uint256 indexed passwordHash, address indexed claimer, uint256 claimAmount, uint remaining, uint256 remainingAmount);
+    event HongbaoClaimed(uint256 id, uint256 indexed passwordHash, address indexed claimer, uint256 claimAmount, uint remaining, uint256 remainingAmount);
 
     // 创建红包
     function createHongbao(uint256 passwordHash, uint total, uint amount, ReceiveType receiveType) public payable {
@@ -86,7 +86,7 @@ contract HongbaoDev {
         console.log("packet created, totalAmount %s, packet number %s", h.totalAmount, total);
 
         idMap[h.id]= h;
-        emit HongbaoCreated(passwordHash, total, amount, msg.sender, receiveType, address(0));
+        emit HongbaoCreated(h.id, passwordHash, total, amount, msg.sender, receiveType, address(0));
     }
 
     // 创建红包
@@ -111,6 +111,7 @@ contract HongbaoDev {
         } else {
             (IERC20(token)).safeTransferFrom(msg.sender, address(this), amount);
         }
+        nextId++;
 
         h.sender = msg.sender;
         h.passwordHash = passwordHash;
@@ -120,9 +121,10 @@ contract HongbaoDev {
         h.remainingAmount = msg.value;
         h.receiveType = receiveType;
         h.timestamp = block.timestamp;
+        h.token = token;
         console.log("packet created, totalAmount %s, packet number %s", h.totalAmount, total);
-
-        emit HongbaoCreated(passwordHash, total, amount, msg.sender, receiveType, token);
+        idMap[h.id]= h;
+        emit HongbaoCreated(h.id, passwordHash, total, amount, msg.sender, receiveType, token);
     }
 
     // 查询当前的剩余的值
@@ -144,7 +146,7 @@ contract HongbaoDev {
         //        printUint256Array(proof);
         HongbaoInfo storage hongbao = hongbaoMap[passwordHash];
         require(hongbao.remaining > 0, "hongbao fully claimed");
-        bytes memory claimKey = abi.encodePacked(passwordHash, hongbao.timestamp, msg.sender);
+        bytes32 claimKey = keccak256(abi.encodePacked(passwordHash, hongbao.timestamp, msg.sender));
         require(!claimedMap[claimKey], "you already claimed hongbao");
 
         //零知识证明 验证领取者知道口令
@@ -179,7 +181,7 @@ contract HongbaoDev {
         hongbao.remainingAmount -= claimAmount;
 
         claimedMap[claimKey] = true;
-        emit HongbaoClaimed(passwordHash, msg.sender, claimAmount, hongbao.remaining, hongbao.remainingAmount);
+        emit HongbaoClaimed(hongbao.id, passwordHash, msg.sender, claimAmount, hongbao.remaining, hongbao.remainingAmount);
         return verify;
     }
 
